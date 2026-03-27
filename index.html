@@ -315,114 +315,829 @@ const EVALUACION = [
   { m: "14. Integración", q: "Ante un ECG normal con dolor torácico opresivo activo:", a: ["Se descarta infarto", "Se debe seriar ECG y troponinas", "Es dolor osteomuscular"], c: 1, f: "Un ECG normal inicial no descarta isquemia aguda. Hasta un 15% de los infartos presentan un trazado normal en los primeros minutos." }
 ];
 
-const RECURSOS_VISUALES = {
+const MODULOS_CONTENIDO = {
   s1: {
-    src: '/assent/modules/s1-fundamentos.jpg',
-    alt: 'Esquema bibliográfico de derivaciones frontales y precordiales',
-    titulo: 'Derivaciones y orientación espacial',
-    descripcion: 'Lámina de apoyo para revisar la lógica de las derivaciones, la disposición de electrodos y la lectura espacial básica antes de interpretar ritmos o síndromes.',
-    fuente: 'Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 16'
+    objetivo: "Dominar la técnica de registro antes de interpretar clínica: calibración, derivaciones, ejes e intervalos.",
+    resumen: "Todo ECG debe revisarse primero como un registro técnico. Si la calibración, la velocidad o la colocación de electrodos no son correctas, la interpretación clínica pierde valor.",
+    puntosClave: [
+      "Calibración estándar: 25 mm/s y 10 mm/mV antes de interpretar ritmo, voltaje o intervalos.",
+      "Ritmo sinusal: onda P positiva en II y negativa en aVR; cada P debe conducir a un QRS.",
+      "Valores de referencia prácticos: PR 120-200 ms, QRS < 120 ms y QT siempre interpretado en función de la frecuencia."
+    ],
+    errores: [
+      "Dar por patológico un ECG con electrodos mal colocados o con mala calibración.",
+      "Interpretar el eje o la frecuencia sin comprobar primero el papel y la regularidad del ritmo.",
+      "Olvidar que un trazado técnicamente deficiente puede simular bloqueos, bajo voltaje o isquemia."
+    ],
+    perla: "La mejor lectura clínica empieza descartando errores técnicos. Primero registro fiable, después diagnóstico.",
+    galeria: [
+      {
+        src: "/assent/figures/fund-derivaciones-bipolares.jpg",
+        alt: "Esquema de derivaciones bipolares y precordiales",
+        titulo: "Derivaciones bipolares y precordiales",
+        descripcion: "Lámina esquemática para fijar cómo registran las derivaciones desde las extremidades y el precordio.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 16"
+      },
+      {
+        src: "/assent/figures/fund-derivaciones-unipolares.jpg",
+        alt: "Esquema de derivaciones unipolares",
+        titulo: "Derivaciones unipolares y orientación espacial",
+        descripcion: "Ayuda visual para relacionar aVR, aVL y aVF con el sistema de referencia frontal.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 24"
+      },
+      {
+        src: "/assent/figures/fund-intervalos.jpg",
+        alt: "Diagrama de intervalos PR, ST, QT y RR",
+        titulo: "Segmentos e intervalos básicos",
+        descripcion: "Resumen gráfico de PR, ST, QT y RR para leer cualquier trazado con orden.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 33"
+      }
+    ],
+    fuentes: [
+      "Paula Parra, Electrocardiografía ECG/EKG esquemas, pp. 16, 24 y 33",
+      "Electrocardiografía básica. Taller ECG de urgencia, pp. 4-7",
+      "Conthe y Lobos, El Electrocardiograma, módulo 1, pp. 15-17"
+    ]
   },
   s2: {
-    src: '/assent/modules/s2-patrones.jpg',
-    alt: 'Página bibliográfica con patrón de preexcitación y onda delta',
-    titulo: 'Patrón reconocible de preexcitación',
-    descripcion: 'Ejemplo visual seleccionado para fijar rasgos de reconocimiento rápido, especialmente la onda delta y el patrón de WPW como imagen-señal clásica.',
-    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 52'
+    objetivo: "Reconocer patrones ECG frecuentes a primera vista y saber cuándo un patrón obliga a ampliar el contexto clínico.",
+    resumen: "La lectura por patrones acelera el reconocimiento de entidades como preexcitación, Brugada o alteraciones metabólicas, pero nunca sustituye la correlación con síntomas y situación hemodinámica.",
+    puntosClave: [
+      "PR corto con onda delta orienta a preexcitación; en taquicardia irregular de QRS ancho debe pensarse en WPW con fibrilación auricular.",
+      "Ascenso del ST en V1-V2 puede ser Brugada, pero también requiere descartar otras causas de elevación del ST.",
+      "Ondas T muy picudas, ondas U prominentes o cubeta digitálica son patrones que orientan, pero deben leerse con el contexto clínico."
+    ],
+    errores: [
+      "Confundir reconocimiento visual con diagnóstico definitivo.",
+      "Etiquetar como 'patrón benigno' un trazado si el paciente tiene síncope, dolor torácico o hipotensión.",
+      "Olvidar que un mismo patrón puede tener causas eléctricas, estructurales o metabólicas."
+    ],
+    perla: "Un patrón sirve para abrir hipótesis y priorizar riesgos; el diagnóstico final exige integrar clínica, cronología y, si hace falta, seriación.",
+    galeria: [
+      {
+        src: "/assent/figures/case-145.jpg",
+        alt: "ECG con preexcitación tipo WPW",
+        titulo: "Preexcitación tipo WPW",
+        descripcion: "Caso con PR corto y onda delta útil para entrenar reconocimiento rápido de preexcitación.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 145, pp. 289-290"
+      },
+      {
+        src: "/assent/figures/case-144.jpg",
+        alt: "ECG con patrón de Brugada",
+        titulo: "Patrón de Brugada",
+        descripcion: "Ejemplo docente con elevación característica del ST en V1-V2 y morfología tipo Brugada.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 144, pp. 287-288"
+      },
+      {
+        src: "/assent/figures/case-134.jpg",
+        alt: "ECG con efecto digitálico e hipopotasemia",
+        titulo: "Patrón metabólico-farmacológico",
+        descripcion: "FA, extrasístoles ventriculares, onda U prominente y cubeta digitálica como patrón combinado de alta utilidad clínica.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 134, pp. 267-268"
+      }
+    ],
+    fuentes: [
+      "Conthe y Lobos, módulo 2, pp. 51-74",
+      "Hampton, 150 Problemas de ECG, casos 134, 144 y 145",
+      "Paula Parra, Electrocardiografía ECG/EKG esquemas, pp. 27-33"
+    ]
   },
   s3: {
-    src: '/assent/modules/s3-normal.jpg',
-    alt: 'Página bibliográfica sobre variantes y hallazgos del electrocardiograma normal',
-    titulo: 'Normalidad y variantes frecuentes',
-    descripcion: 'Resumen útil para distinguir hallazgos fisiológicos, variantes benignas y alteraciones que no deben confundirse con patología mayor en un ECG basal.',
-    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 78'
+    objetivo: "Definir qué puede considerarse un ECG normal o variante de normalidad en adultos.",
+    resumen: "Un ECG normal no es solo 'sin hallazgos llamativos'. Debe revisarse ritmo, eje, intervalos, voltajes y morfología de ondas para distinguir normalidad de variantes benignas y de hallazgos limítrofes.",
+    puntosClave: [
+      "Eje normal habitual del adulto: entre -30° y +90° si no hay datos que sugieran otra interpretación.",
+      "QRS estrecho, PR normal, QTc en rango y morfología de onda T compatible con edad y contexto clínico son la base de la normalidad.",
+      "Arritmia sinusal, repolarización precoz o extrasistolia aislada pueden ser variantes benignas si la clínica acompaña."
+    ],
+    errores: [
+      "Dar por normal un trazado con PR corto, bloqueo de rama o inversión de T sin valorar edad, raza, síntomas y contexto.",
+      "Confundir un ECG normal con descarte absoluto de enfermedad aguda.",
+      "Olvidar que la comparación con ECG previos aumenta mucho la seguridad diagnóstica."
+    ],
+    perla: "La normalidad electrocardiográfica se interpreta siempre dentro del paciente real: edad, síntomas, antecedentes y ECG previos.",
+    galeria: [
+      {
+        src: "/assent/figures/fund-criterios-qrs.jpg",
+        alt: "Criterios de amplitud y duración del complejo QRS y punto J",
+        titulo: "Rangos básicos de amplitud y duración",
+        descripcion: "Lámina para fijar límites normales del QRS y del punto J antes de discutir patología.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 30"
+      },
+      {
+        src: "/assent/figures/fund-onda-t.jpg",
+        alt: "Valores normales de la onda T",
+        titulo: "Morfología normal de la onda T",
+        descripcion: "Apoyo visual para diferenciar repolarización fisiológica de inversión o aplanamiento patológicos.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 31"
+      },
+      {
+        src: "/assent/figures/fund-eje.jpg",
+        alt: "Esquema del eje eléctrico normal y desviaciones",
+        titulo: "Eje normal y desviaciones",
+        descripcion: "Resumen gráfico del sistema hexaxial y de la identificación rápida del eje.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 38"
+      }
+    ],
+    fuentes: [
+      "Conthe y Lobos, módulo 3, pp. 78-84",
+      "Paula Parra, Electrocardiografía ECG/EKG esquemas, pp. 30, 31 y 38",
+      "Electrocardiografía básica. Taller ECG de urgencia, pp. 4-7"
+    ]
   },
   s4: {
-    src: '/assent/modules/s4-disnea.jpg',
-    alt: 'Página bibliográfica con casos ECG del paciente con disnea y sobrecarga derecha',
-    titulo: 'Disnea y corazón derecho',
-    descripcion: 'Selección centrada en patrones de sobrecarga de cavidades derechas, taquicardia sinusal y signos orientadores de TEP o hipertensión pulmonar.',
-    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 133'
+    objetivo: "Identificar patrones ECG que orientan a disnea de origen pulmonar, sobrecarga derecha o insuficiencia cardiaca.",
+    resumen: "En la disnea, el ECG ayuda a reconocer sobrecarga de cavidades derechas, enfermedad pulmonar crónica, embolia pulmonar y descompensación cardiaca, aunque un ECG poco llamativo no excluye gravedad.",
+    puntosClave: [
+      "Taquicardia sinusal es frecuente en disnea aguda, pero si se asocia a eje derecho, R dominante en V1 o S1Q3T3 obliga a pensar en corazón derecho.",
+      "Crecimiento auricular derecho, sobrecarga del ventrículo derecho y BCRD pueden orientar a hipertensión pulmonar o TEP.",
+      "En insuficiencia cardiaca también pueden verse FA, bajo voltaje, bloqueos de rama o cambios inespecíficos de repolarización."
+    ],
+    errores: [
+      "Descartar patología grave porque el ECG solo muestra taquicardia sinusal.",
+      "Interpretar S1Q3T3 como diagnóstico exclusivo de TEP; es solo un patrón orientador.",
+      "Olvidar la correlación con saturación, hemodinámica y exploración respiratoria."
+    ],
+    perla: "El ECG en disnea es especialmente útil cuando 'apunta a la derecha': eje derecho, R en V1, BCRD o strain de VD cambian la prioridad diagnóstica.",
+    galeria: [
+      {
+        src: "/assent/figures/conthe-disnea-20.jpg",
+        alt: "ECG de paciente con disnea súbita y signos de sobrecarga derecha",
+        titulo: "Disnea súbita y cavidades derechas",
+        descripcion: "Caso del módulo de disnea con trazado orientador de sobrecarga del corazón derecho.",
+        fuente: "Conthe y Lobos, módulo 4, p. 131"
+      },
+      {
+        src: "/assent/figures/case-51.jpg",
+        alt: "ECG de paciente con disnea y cambios ST-T inespecíficos",
+        titulo: "Disnea con cambios inespecíficos",
+        descripcion: "Ejemplo útil para recordar que no todo cambio ST-T en un paciente disneico es isquemia aguda.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 51, pp. 101-102"
+      },
+      {
+        src: "/assent/figures/case-52.jpg",
+        alt: "ECG con hipertrofia auricular y ventricular derechas",
+        titulo: "Enfermedad pulmonar y patrón derecho",
+        descripcion: "Caso docente de taquicardia sinusal con datos de hipertrofia auricular y ventricular derechas.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 52, pp. 103-104"
+      }
+    ],
+    fuentes: [
+      "Conthe y Lobos, módulo 4, pp. 107 y 131-134",
+      "Hampton, 150 Problemas de ECG, casos 51 y 52",
+      "Electrocardiografía básica. Taller ECG de urgencia, pp. 15-16"
+    ]
   },
   s5: {
-    src: '/assent/modules/s5-isquemia.jpg',
-    alt: 'Esquema bibliográfico de localización del infarto y elevación del ST',
-    titulo: 'Topografía de isquemia e infarto',
-    descripcion: 'Lámina para correlacionar derivaciones, territorios miocárdicos y patrones de elevación del ST en la interpretación del dolor torácico.',
-    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 140'
+    objetivo: "Reconocer patrones de isquemia y lesión que obligan a seriación, reperfusión o vigilancia estrecha.",
+    resumen: "El ECG del dolor torácico se interpreta por derivaciones contiguas, cambios recíprocos y evolución temporal. Un trazado inicialmente normal no excluye isquemia si la clínica es sugestiva.",
+    puntosClave: [
+      "Elevación o descenso del ST deben interpretarse por territorio, derivaciones contiguas y contexto temporal.",
+      "La inversión simétrica de T, la depresión horizontal del ST y los cambios recíprocos aumentan la sospecha de isquemia activa.",
+      "Ante dolor torácico persistente, el ECG debe repetirse y correlacionarse con troponinas y situación clínica."
+    ],
+    errores: [
+      "Cerrar el diagnóstico con un solo ECG si el dolor sigue activo.",
+      "Confundir cambios secundarios por HVI, BRI o digoxina con lesión primaria sin más datos.",
+      "Interpretar una elevación aislada del ST sin valorar repolarización precoz, pericarditis o Brugada."
+    ],
+    perla: "En dolor torácico, la evolución del ECG pesa tanto como la fotografía inicial.",
+    galeria: [
+      {
+        src: "/assent/figures/conthe-isquemia-20.jpg",
+        alt: "ECG de paciente con dolor torácico y múltiples factores de riesgo",
+        titulo: "Caso clínico de dolor torácico",
+        descripcion: "Trazado del módulo de dolor torácico útil para entrenar lectura sistemática por territorios.",
+        fuente: "Conthe y Lobos, módulo 5, p. 163"
+      },
+      {
+        src: "/assent/figures/case-68.jpg",
+        alt: "ECG con elevación del ST compatible con infarto anterior",
+        titulo: "IAM anterior agudo",
+        descripcion: "Caso clásico de elevación del ST con afectación anterior y repercusión inferior.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 68, pp. 135-136"
+      },
+      {
+        src: "/assent/figures/case-87.jpg",
+        alt: "ECG basal y de esfuerzo con cambios de isquemia inducible",
+        titulo: "Isquemia inducible en esfuerzo",
+        descripcion: "Pareja de trazados muy útil para entender por qué un ECG basal poco expresivo no excluye enfermedad coronaria.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 87, pp. 173-174"
+      }
+    ],
+    fuentes: [
+      "Conthe y Lobos, módulo 5, pp. 140-165",
+      "Hampton, 150 Problemas de ECG, casos 68 y 87"
+    ]
   },
   s6: {
-    src: '/assent/modules/s6-palpitaciones.jpg',
-    alt: 'Algoritmo bibliográfico de aproximación diagnóstica a taquicardias en palpitaciones',
-    titulo: 'Mapa inicial de las taquicardias',
-    descripcion: 'Apoyo visual para ordenar el diagnóstico diferencial de palpitaciones según regularidad, anchura del QRS y contexto clínico.',
-    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 167'
+    objetivo: "Ordenar el diagnóstico diferencial de palpitaciones por anchura del QRS, regularidad y presencia o ausencia de onda P.",
+    resumen: "La pregunta inicial en palpitaciones es si el QRS es estrecho o ancho y si el ritmo es regular o irregular. Esa primera bifurcación cambia por completo la urgencia y el tratamiento.",
+    puntosClave: [
+      "FA: ausencia de ondas P organizadas y RR irregularmente irregular.",
+      "Taquicardia regular de QRS estrecho suele ser supraventricular; QRS ancho obliga a descartar taquicardia ventricular o preexcitación.",
+      "Palpitaciones con síncope, hipotensión, dolor torácico o antecedentes familiares de muerte súbita son de alto riesgo."
+    ],
+    errores: [
+      "Llamar 'nervios' a toda taquicardia sin leer regularidad y anchura del QRS.",
+      "Confundir FA con extrasístoles frecuentes o con flutter de conducción variable.",
+      "No sospechar WPW cuando aparece taquicardia ancha e irregular."
+    ],
+    perla: "En palpitaciones, regularidad + QRS estrecho/ancho es el atajo más rentable para no perder tiempo.",
+    galeria: [
+      {
+        src: "/assent/figures/conthe-palpitaciones-20.jpg",
+        alt: "ECG de paciente con palpitaciones en módulo de Conthe",
+        titulo: "Palpitaciones con trazado de reposo",
+        descripcion: "Caso del módulo de palpitaciones útil para entrenar una lectura sistemática de la taquiarritmia.",
+        fuente: "Conthe y Lobos, módulo 6, p. 193"
+      },
+      {
+        src: "/assent/figures/case-59.jpg",
+        alt: "ECG con fibrilación auricular y extrasístoles ventriculares frecuentes",
+        titulo: "FA y extrasístoles ventriculares",
+        descripcion: "Caso de palpitaciones rápidas e irregulares con probables repercusiones farmacológicas.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 59, pp. 117-118"
+      },
+      {
+        src: "/assent/figures/case-146.jpg",
+        alt: "ECG de preexcitación con fibrilación auricular",
+        titulo: "WPW con arritmia peligrosa",
+        descripcion: "Ejemplo de taquicardia irregular de QRS ancho en síndrome de preexcitación.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 146, pp. 291-292"
+      }
+    ],
+    fuentes: [
+      "Conthe y Lobos, módulo 6, pp. 168-195",
+      "Hampton, 150 Problemas de ECG, casos 59 y 146"
+    ]
   },
   s7: {
-    src: '/assent/modules/s7-sincope.jpg',
-    alt: 'Página bibliográfica de causas cardiogénicas del síncope',
-    titulo: 'Síncope cardiogénico y arritmias',
-    descripcion: 'Referencia práctica para vincular síncope con bradiarritmias, taquiarritmias y causas estructurales con traducción electrocardiográfica.',
-    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 203'
+    objetivo: "Distinguir síncope benigno de síncope arrítmico potencialmente letal a partir de la clínica y el ECG.",
+    resumen: "El ECG del síncope busca sobre todo bradiarritmias, trastornos avanzados de conducción, QT largo, preexcitación o patrones de alto riesgo como Brugada.",
+    puntosClave: [
+      "Síncope en esfuerzo, en decúbito, sin pródromos o con antecedentes familiares de muerte súbita es de alto riesgo.",
+      "Bloqueos AV avanzados, QT largo, TV y patrones de Brugada obligan a estudio urgente.",
+      "El síncope vasovagal suele acompañarse de pródromos y un ECG sin hallazgos estructurales mayores."
+    ],
+    errores: [
+      "Etiquetar como vasovagal un síncope solo porque el paciente recuperó rápido.",
+      "Infravalorar un QT largo o un bloqueo avanzado si el paciente está asintomático al valorarlo.",
+      "Olvidar que un ECG normal no descarta completamente la causa arrítmica, pero sí cambia la probabilidad."
+    ],
+    perla: "En síncope, el ECG se usa para detectar lo peligroso, no para explicarlo todo.",
+    galeria: [
+      {
+        src: "/assent/figures/case-125.jpg",
+        alt: "ECG de síncope en esfuerzo con QT largo",
+        titulo: "Síncope de esfuerzo y QT largo",
+        descripcion: "Caso clave para asociar desmayo en ejercicio y síndrome de QT largo congénito.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 125, pp. 249-250"
+      },
+      {
+        src: "/assent/figures/conthe-sincope-81.jpg",
+        alt: "ECG del apartado de síncope en Conthe",
+        titulo: "Síncope con trazado orientador",
+        descripcion: "Lámina bibliográfica útil para discutir síncope cardiogénico y arritmias malignas.",
+        fuente: "Conthe y Lobos, revisión de trazados ECG, p. 249"
+      },
+      {
+        src: "/assent/figures/case-113.jpg",
+        alt: "ECG con bloqueo 2 a 1 y trastorno de conducción avanzado",
+        titulo: "Bradiarritmia con riesgo de Stokes-Adams",
+        descripcion: "Trazado que obliga a pensar en marcapasos y en síncope por trastorno avanzado de conducción.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 113, pp. 225-226"
+      }
+    ],
+    fuentes: [
+      "Conthe y Lobos, módulo 7, pp. 203-205",
+      "Hampton, 150 Problemas de ECG, casos 113 y 125"
+    ]
   },
   s8: {
-    src: '/assent/modules/s8-conduccion.jpg',
-    alt: 'Página bibliográfica sobre bloqueo de rama derecha y trastornos de conducción',
-    titulo: 'Bloqueos de rama y QRS ancho',
-    descripcion: 'Lámina elegida por su valor docente para reconocer ensanchamiento del QRS y morfologías típicas de los trastornos de conducción intraventricular.',
-    fuente: 'Electrocardiografía básica. Taller ECG de urgencia, p. 14'
+    objetivo: "Reconocer bloqueos AV y bloqueos de rama con su impacto clínico real.",
+    resumen: "Los trastornos de conducción no se interpretan solo por el PR o el QRS. Importa saber dónde está el retraso, si es estable y si el paciente tiene síntomas.",
+    puntosClave: [
+      "BCRD: morfología rSR' en V1-V2 y S ancha en derivaciones laterales.",
+      "BCRI: QRS ancho con R ancha/mellada en derivaciones laterales; cambia la interpretación del ST-T.",
+      "Bloqueo AV 2:1, bifascicular o trifascicular en paciente sintomático es un hallazgo de alto impacto clínico."
+    ],
+    errores: [
+      "Llamar 'bloqueo benigno' a un paciente con mareo, síncope o frecuencia muy lenta.",
+      "Interpretar isquemia igual en presencia de BRI avanzado.",
+      "No distinguir entre retraso nodal, trastorno infranodal y bloqueo completo."
+    ],
+    perla: "En conducción, la clínica manda: mareo o síncope convierten un hallazgo eléctrico en problema urgente.",
+    galeria: [
+      {
+        src: "/assent/figures/case-113.jpg",
+        alt: "ECG con bloqueo AV 2 a 1 y bloqueo bifascicular",
+        titulo: "Bloqueo 2:1 con afectación multifascicular",
+        descripcion: "Caso docente muy útil para leer bloqueo AV y trastorno de conducción intraventricular a la vez.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 113, pp. 225-226"
+      },
+      {
+        src: "/assent/figures/case-10.jpg",
+        alt: "ECG con fibrilación auricular lenta y BRI",
+        titulo: "Fibrilación auricular con BRI y respuesta lenta",
+        descripcion: "Ejemplo de combinación de trastorno de conducción e insuficiencia cardiaca que modifica el tratamiento.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 10, pp. 19-20"
+      }
+    ],
+    fuentes: [
+      "Electrocardiografía básica. Taller ECG de urgencia, pp. 13-15",
+      "Hampton, 150 Problemas de ECG, casos 10 y 113"
+    ]
   },
   s9: {
-    src: '/assent/modules/s9-cavidades.jpg',
-    alt: 'Página bibliográfica de crecimiento auricular y ventricular',
-    titulo: 'Crecimiento auricular y ventricular',
-    descripcion: 'Apoyo visual para repasar criterios morfológicos de crecimiento auricular y signos indirectos de hipertrofia o sobrecarga ventricular.',
-    fuente: 'Electrocardiografía básica. Taller ECG de urgencia, p. 13'
+    objetivo: "Detectar signos ECG de crecimiento auricular y de hipertrofia ventricular útiles para orientar el contexto clínico.",
+    resumen: "El ECG no mide cavidades con precisión anatómica, pero sí orienta sobre sobrecarga, hipertrofia y repercusión eléctrica de enfermedades valvulares, pulmonares o hipertensivas.",
+    puntosClave: [
+      "P pulmonale: aumento del voltaje de la onda P, típico de crecimiento auricular derecho.",
+      "Criterios de HVI: combinación de voltajes altos y alteraciones secundarias de repolarización.",
+      "RVH: eje derecho, R dominante en V1 y signos de sobrecarga del ventrículo derecho."
+    ],
+    errores: [
+      "Usar un criterio de voltaje aislado como diagnóstico anatómico definitivo.",
+      "Confundir RVH con preexcitación o rotación cardíaca sin revisar el conjunto del trazado.",
+      "No integrar clínica pulmonar, hipertensión o valvulopatía."
+    ],
+    perla: "Los voltajes por sí solos orientan; la sobrecarga real se confirma al sumar eje, repolarización y contexto clínico.",
+    galeria: [
+      {
+        src: "/assent/figures/case-124.jpg",
+        alt: "ECG con hipertrofia ventricular izquierda y cambios de repolarización",
+        titulo: "HVI con strain",
+        descripcion: "Trazado muy útil para reconocer criterios de voltaje y cambios secundarios de repolarización.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 124, pp. 247-248"
+      },
+      {
+        src: "/assent/figures/case-52.jpg",
+        alt: "ECG con signos de hipertrofia auricular y ventricular derechas",
+        titulo: "Patrón de cavidades derechas",
+        descripcion: "Caso con crecimiento auricular derecho, hipertrofia ventricular derecha y eje desviado a la derecha.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 52, pp. 103-104"
+      }
+    ],
+    fuentes: [
+      "Electrocardiografía básica. Taller ECG de urgencia, p. 12",
+      "Hampton, 150 Problemas de ECG, casos 52 y 124"
+    ]
   },
   s10: {
-    src: '/assent/modules/s10-repolarizacion.jpg',
-    alt: 'Página bibliográfica sobre cambios del segmento ST y repolarización',
-    titulo: 'Cambios ST-T y lesión miocárdica',
-    descripcion: 'Página útil para fijar el contraste entre descenso y elevación del ST, así como su correlación con isquemia subendocárdica o transmural.',
-    fuente: 'Electrocardiografía básica. Taller ECG de urgencia, p. 11'
+    objetivo: "Diferenciar cambios primarios y secundarios de la repolarización para no sobrestimar ni infravalorar el riesgo.",
+    resumen: "La repolarización se altera en isquemia, hipertrofia, bloqueos, fármacos, electrolitos y patrones benignos. La clave es decidir si el cambio es primario o secundario.",
+    puntosClave: [
+      "Descenso horizontal del ST y T simétrica invertida aumentan la sospecha de isquemia primaria.",
+      "HVI, BRI, digoxina y preexcitación generan alteraciones secundarias que deben reconocerse como tales.",
+      "La comparación con ECG previos y la correlación con síntomas es esencial."
+    ],
+    errores: [
+      "Diagnosticar SCA solo por cambios ST-T sin integrar el patrón del QRS.",
+      "Ignorar una T simétrica profunda en un contexto clínico sugestivo.",
+      "Llamar 'inespecífico' a todo lo que no encaja a primera vista."
+    ],
+    perla: "La repolarización no se lee aislada: siempre depende del QRS que la precede y del paciente que tienes delante.",
+    galeria: [
+      {
+        src: "/assent/figures/fund-onda-t.jpg",
+        alt: "Esquema de morfología normal de la onda T",
+        titulo: "Base fisiológica de la onda T",
+        descripcion: "Antes de hablar de patología, conviene fijar cómo luce una onda T normal.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 31"
+      },
+      {
+        src: "/assent/figures/case-87.jpg",
+        alt: "ECG de esfuerzo con cambios de repolarización isquémicos",
+        titulo: "Isquemia inducible y repolarización",
+        descripcion: "Ejemplo claro de cómo cambian ST y T bajo estrés en enfermedad coronaria.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 87, pp. 173-174"
+      },
+      {
+        src: "/assent/figures/case-68.jpg",
+        alt: "ECG con elevación del ST en infarto anterior",
+        titulo: "Elevación del ST en contexto isquémico",
+        descripcion: "Trazado útil para contrastar lesión primaria con otras causas de ascenso del ST.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 68, pp. 135-136"
+      }
+    ],
+    fuentes: [
+      "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 31",
+      "Electrocardiografía básica. Taller ECG de urgencia, pp. 10-11",
+      "Hampton, 150 Problemas de ECG, casos 68 y 87"
+    ]
   },
   s11: {
-    src: '/assent/modules/s11-electrolitos.jpg',
-    alt: 'Página bibliográfica con alteraciones ECG por electrolitos y digital',
-    titulo: 'Electrolitos y trazado',
-    descripcion: 'Selección dedicada a hiperpotasemia, cambios progresivos del trazado y señales que deben hacer pensar en trastorno metabólico urgente.',
-    fuente: 'Electrocardiografía básica. Taller ECG de urgencia, p. 17'
+    objetivo: "Relacionar alteraciones del potasio y otros electrolitos con cambios progresivos del trazado.",
+    resumen: "Las alteraciones electrolíticas son especialmente peligrosas porque el ECG puede adelantarse al deterioro clínico. Hay que reconocer los patrones antes de que aparezca inestabilidad grave.",
+    puntosClave: [
+      "Hiperpotasemia: primero T picudas, luego aplanamiento/desaparición de P, ensanchamiento del QRS y riesgo de arritmias malignas.",
+      "Hipopotasemia: T planas, descenso del ST y ondas U prominentes.",
+      "Los cambios pueden potenciar el efecto de digoxina y facilitar arritmias."
+    ],
+    errores: [
+      "Esperar al laboratorio si el ECG ya es altamente sugestivo y el paciente está grave.",
+      "Confundir ondas U prominentes con repolarización benigna.",
+      "No revisar medicación concomitante cuando aparece alteración del potasio."
+    ],
+    perla: "En electrolitos, el ECG funciona como una alarma temprana: si el patrón es claro, actúa como si el laboratorio ya te hubiera respondido.",
+    galeria: [
+      {
+        src: "/assent/figures/case-122.jpg",
+        alt: "ECG con hipopotasemia y efecto digitálico",
+        titulo: "Hipopotasemia con onda U",
+        descripcion: "Caso muy útil para reconocer aplanamiento difuso de T, ondas U y depresión descendente del ST.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 122, pp. 243-244"
+      },
+      {
+        src: "/assent/figures/case-134.jpg",
+        alt: "ECG con hipopotasemia y toxicidad por digoxina",
+        titulo: "Alteración electrolítica sobre cardiopatía previa",
+        descripcion: "Ejemplo de cómo el potasio bajo modifica la presentación de pacientes con FA y tratamiento cardíaco.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 134, pp. 267-268"
+      }
+    ],
+    fuentes: [
+      "Electrocardiografía básica. Taller ECG de urgencia, p. 16",
+      "Hampton, 150 Problemas de ECG, casos 122 y 134"
+    ]
   },
   s12: {
-    src: '/assent/modules/s12-farmacos.jpg',
-    alt: 'Caso bibliográfico de toxicidad digitálica con hipopotasemia',
-    titulo: 'Efecto digitálico y toxicidad',
-    descripcion: 'Caso procedente de la bibliografía de problemas ECG para ilustrar cubeta digitálica, extrasistolia ventricular y contexto clínico de toxicidad.',
-    fuente: 'Hampton, 150 Problemas de ECG, p. 278'
+    objetivo: "Reconocer el efecto ECG de digoxina y de otros fármacos que alteran conducción o repolarización.",
+    resumen: "No todo hallazgo farmacológico implica toxicidad. La cubeta digitálica puede ser solo impregnación terapéutica, mientras que la toxicidad aparece cuando se suma clínica, arritmias y con frecuencia alteraciones del potasio.",
+    puntosClave: [
+      "Cubeta digitálica: descenso cóncavo del ST, típico pero no necesariamente tóxico.",
+      "Toxicidad digitálica: bradiarritmias, taquiarritmias, extrasístoles ventriculares y mayor riesgo si existe hipopotasemia.",
+      "Los fármacos que prolongan el QT aumentan el riesgo de torsades, sobre todo si hay síncope o desencadenantes."
+    ],
+    errores: [
+      "Tratar una cubeta digitálica aislada como intoxicación sin más datos.",
+      "Dar antiarrítmicos sin corregir antes potasio y revisar medicación responsable.",
+      "Olvidar que el contexto clínico y la concentración del fármaco cambian la interpretación."
+    ],
+    perla: "La pregunta clave no es '¿hay efecto farmacológico?', sino '¿ese efecto está descompensando al paciente?'",
+    galeria: [
+      {
+        src: "/assent/figures/case-134.jpg",
+        alt: "ECG con fibrilación auricular, extrasístoles ventriculares y efecto digitálico",
+        titulo: "Toxicidad digitálica probable",
+        descripcion: "Caso especialmente didáctico por combinar FA, ectopia ventricular y ondas U prominentes.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 134, pp. 267-268"
+      },
+      {
+        src: "/assent/figures/case-122.jpg",
+        alt: "ECG con efecto digitálico e hipopotasemia",
+        titulo: "Efecto de digoxina e hipopotasemia",
+        descripcion: "Permite diferenciar patrón farmacológico de toxicidad verdadera en el contexto adecuado.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 122, pp. 243-244"
+      },
+      {
+        src: "/assent/figures/case-125.jpg",
+        alt: "ECG con QT largo congénito",
+        titulo: "QT prolongado y arritmia farmacológica o congénita",
+        descripcion: "Lámina útil para recordar por qué los fármacos que alargan QT requieren vigilancia contextual.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 125, pp. 249-250"
+      }
+    ],
+    fuentes: [
+      "Electrocardiografía básica. Taller ECG de urgencia, p. 16",
+      "Hampton, 150 Problemas de ECG, casos 122, 125 y 134"
+    ]
   },
   s13: {
-    src: '/assent/modules/s13-canalopatias.jpg',
-    alt: 'Caso bibliográfico de síndrome de Brugada',
-    titulo: 'Canalopatías y muerte súbita',
-    descripcion: 'Ejemplo seleccionado por su patrón de Brugada, útil para enlazar canalopatías, riesgo arrítmico y lectura cuidadosa de V1-V2.',
-    fuente: 'Hampton, 150 Problemas de ECG, p. 298'
+    objetivo: "Identificar síndromes eléctricos de alto riesgo arrítmico y saber qué hallazgos son especialmente peligrosos.",
+    resumen: "Brugada, QT largo y preexcitación son patrones de gran importancia pronóstica cuando aparecen en el contexto adecuado. Algunos pueden ser transitorios y aun así ser muy relevantes.",
+    puntosClave: [
+      "Brugada tipo 1: elevación del ST en precordiales derechas con morfología cóncava descendente/coved; el contexto clínico manda.",
+      "QT largo: síncope de esfuerzo o antecedentes familiares de muerte súbita obligan a pensar en canalopatía.",
+      "WPW: PR corto y onda delta; si aparece FA con QRS ancho e irregular la situación es de alto riesgo."
+    ],
+    errores: [
+      "Normalizar un patrón sospechoso porque el paciente está bien en ese momento.",
+      "Tratar como TSV convencional una FA preexcitada.",
+      "Olvidar el valor del antecedente familiar de muerte súbita."
+    ],
+    perla: "En síndromes eléctricos, un ECG intermitente no significa un riesgo intermitente.",
+    galeria: [
+      {
+        src: "/assent/figures/case-144.jpg",
+        alt: "ECG con síndrome de Brugada",
+        titulo: "Síndrome de Brugada",
+        descripcion: "Caso clásico con patrón de Brugada útil para entrenar el reconocimiento de V1-V2.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 144, pp. 287-288"
+      },
+      {
+        src: "/assent/figures/case-145.jpg",
+        alt: "ECG con síndrome de Wolff-Parkinson-White",
+        titulo: "WPW en ritmo sinusal",
+        descripcion: "Preexcitación con onda delta y PR corto como puerta de entrada al síndrome de WPW.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 145, pp. 289-290"
+      },
+      {
+        src: "/assent/figures/case-146.jpg",
+        alt: "ECG con WPW y fibrilación auricular",
+        titulo: "WPW con arritmia de alto riesgo",
+        descripcion: "Caso con palpitaciones y taquicardia ancha/irregular que obliga a pensar en FA preexcitada.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 146, pp. 291-292"
+      },
+      {
+        src: "/assent/figures/case-125.jpg",
+        alt: "ECG con QT largo congénito",
+        titulo: "QT largo congénito",
+        descripcion: "Desmayo de esfuerzo y QT largo: combinación con gran valor de alerta.",
+        fuente: "Hampton, 150 Problemas de ECG, caso 125, pp. 249-250"
+      }
+    ],
+    fuentes: [
+      "Conthe y Lobos, módulo 2, p. 73 y revisión miscelánea pp. 250-252",
+      "Hampton, 150 Problemas de ECG, casos 125, 144, 145 y 146"
+    ]
   },
   s14: {
-    src: '/assent/modules/s14-integracion.jpg',
-    alt: 'Esquema bibliográfico de integración clínica en la lectura del ECG',
-    titulo: 'Integración clínica sistemática',
-    descripcion: 'Lámina de cierre para combinar calibración, ritmo, frecuencia y análisis de ondas dentro de una lectura ordenada y clínica del trazado.',
-    fuente: 'Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 40'
+    objetivo: "Integrar técnica, clínica y patrón ECG en una lectura ordenada que ayude a decidir, no solo a describir.",
+    resumen: "El ECG solo adquiere valor máximo cuando se integra con síntomas, hemodinámica, antecedentes, exploración física y evolución temporal. El objetivo final no es nombrar ondas, sino priorizar decisiones clínicas.",
+    puntosClave: [
+      "Secuencia de lectura rentable: técnica, ritmo, frecuencia, eje, intervalos, QRS, repolarización y correlación clínica.",
+      "La misma morfología cambia de significado según si hay dolor torácico, síncope, disnea, fiebre o tratamiento farmacológico.",
+      "Un ECG normal reduce probabilidad, pero no cierra por sí solo escenarios de alta sospecha clínica."
+    ],
+    errores: [
+      "Interpretar el ECG sin mirar al paciente.",
+      "No repetir el ECG cuando la clínica cambia o sigue siendo de alto riesgo.",
+      "Tratar el trazado como un fin en sí mismo y no como una herramienta de decisión."
+    ],
+    perla: "No trates trazados: usa el trazado para decidir mejor qué le está pasando al paciente.",
+    galeria: [
+      {
+        src: "/assent/figures/fund-integracion.jpg",
+        alt: "Esquema de integración clínica en la lectura del ECG",
+        titulo: "Algoritmo de lectura integrada",
+        descripcion: "Resumen visual para ordenar la lectura y no saltar directo al diagnóstico sin revisar lo básico.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 40"
+      },
+      {
+        src: "/assent/figures/fund-derivaciones-bipolares.jpg",
+        alt: "Esquema de derivaciones para revisión integrada",
+        titulo: "Volver a la anatomía del trazado",
+        descripcion: "La integración clínica también exige recordar desde dónde está mirando cada derivación.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 16"
+      },
+      {
+        src: "/assent/figures/fund-intervalos.jpg",
+        alt: "Esquema de intervalos e integración clínica",
+        titulo: "Checklist de intervalos y segmentos",
+        descripcion: "Guía rápida para no saltarse PR, QRS, QT ni segmento ST en la interpretación final.",
+        fuente: "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 33"
+      }
+    ],
+    fuentes: [
+      "Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 40",
+      "Conthe y Lobos, módulo 4, p. 107",
+      "Electrocardiografía básica. Taller ECG de urgencia, pp. 4-7"
+    ]
   }
 };
 
-const RECURSO_EVALUACION = {
-  src: '/assent/modules/evaluacion.jpg',
-  alt: 'Caso bibliográfico de resolución de problema ECG para evaluación',
-  titulo: 'Caso-problema para autoevaluación',
-  descripcion: 'Lámina extraída de la bibliografía de entrenamiento por casos para acompañar el bloque de evaluación y mantener el enfoque práctico del taller.',
-  fuente: 'Hampton, 150 Problemas de ECG, p. 114'
-};
+const CASOS_EVALUACION = [
+  {
+    modulo: "Caso 1 · Ritmo y Conducción",
+    titulo: "Insuficiencia cardiaca con respuesta ventricular lenta",
+    escenario: "Varón de 80 años con disnea y edema maleolar progresivos. El trazado obliga a pensar primero en ritmo y conducción antes que en voltajes o repolarización.",
+    img: "/assent/figures/case-10.jpg",
+    alt: "ECG con fibrilación auricular lenta y bloqueo de rama izquierda",
+    opciones: [
+      "Fibrilación auricular lenta con bloqueo de rama izquierda y trastorno avanzado de conducción",
+      "Taquicardia ventricular sostenida",
+      "Flutter auricular con conducción 2:1",
+      "Pericarditis aguda con bajo voltaje"
+    ],
+    correcta: 0,
+    correctaTexto: "Fibrilación auricular lenta con bloqueo de rama izquierda y trastorno avanzado de conducción",
+    explicacion: "La respuesta bibliográfica describe fibrilación auricular a unos 40 lpm, desviación izquierda del eje y BRI. La frecuencia lenta sugiere enfermedad de conducción más distal y hace probable la necesidad de marcapasos, además del tratamiento de la insuficiencia cardiaca.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 10, pp. 19-20"
+  },
+  {
+    modulo: "Caso 2 · Repolarización Inespecífica",
+    titulo: "Disnea, taquicardia sinusal y cambios ST-T no específicos",
+    escenario: "Mujer de 35 años con disnea y ansiedad. El ECG no debe sobrediagnosticarse: la clave es discriminar si hay un patrón específico o solo cambios inespecíficos.",
+    img: "/assent/figures/case-51.jpg",
+    alt: "ECG con taquicardia sinusal y cambios inespecíficos de ST-T",
+    opciones: [
+      "Infarto anteroseptal con elevación del ST",
+      "Taquicardia sinusal con cambios inespecíficos del ST y de la onda T",
+      "Pericarditis aguda difusa",
+      "Bloqueo trifascicular"
+    ],
+    correcta: 1,
+    correctaTexto: "Taquicardia sinusal con cambios inespecíficos del ST y de la onda T",
+    explicacion: "La respuesta bibliográfica señala ritmo sinusal a 120 lpm, QRS normal y depresión leve del ST con T aplanadas, cambios descritos como inespecíficos. En un contexto compatible con ansiedad o hiperventilación no orientan por sí solos a isquemia aguda.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 51, pp. 101-102"
+  },
+  {
+    modulo: "Caso 3 · Disnea y Corazón Derecho",
+    titulo: "Patrón derecho en paciente con disnea",
+    escenario: "Varón de 40 años ingresado por desmayo con un ECG que en realidad orienta a enfermedad pulmonar/hipertensión pulmonar más que a una alteración izquierda.",
+    img: "/assent/figures/case-52.jpg",
+    alt: "ECG con eje derecho, R dominante en V1 y signos de cavidades derechas",
+    opciones: [
+      "Hipertrofia ventricular izquierda por hipertensión arterial",
+      "Hipertrofia auricular y ventricular derechas sugerentes de enfermedad pulmonar crónica",
+      "Síndrome de Brugada",
+      "ECG estrictamente normal"
+    ],
+    correcta: 1,
+    correctaTexto: "Hipertrofia auricular y ventricular derechas sugerentes de enfermedad pulmonar crónica",
+    explicacion: "La bibliografía describe taquicardia sinusal, P picudas, eje derecho, R dominante en V1 y S profunda en V6. Ese conjunto es un trazado 'derecho' y orienta a hipertrofia de cavidades derechas en el contexto de enfermedad pulmonar.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 52, pp. 103-104"
+  },
+  {
+    modulo: "Caso 4 · Palpitaciones",
+    titulo: "Latidos irregulares en paciente mayor",
+    escenario: "Mujer de 70 años con latidos irregulares. Hay que decidir si se trata solo de una arritmia auricular o si además hay datos de toxicidad farmacológica y ectopia ventricular.",
+    img: "/assent/figures/case-59.jpg",
+    alt: "ECG con fibrilación auricular y extrasístoles ventriculares frecuentes",
+    opciones: [
+      "Fibrilación auricular con extrasístoles ventriculares frecuentes y probable efecto digitálico",
+      "Taquicardia sinusal fisiológica",
+      "Flutter auricular típico con bloqueo fijo",
+      "WPW con fibrilación ventricular"
+    ],
+    correcta: 0,
+    correctaTexto: "Fibrilación auricular con extrasístoles ventriculares frecuentes y probable efecto digitálico",
+    explicacion: "La respuesta bibliográfica habla de fibrilación auricular a unos 100 lpm, extrasístoles ventriculares multifocales frecuentes e infradesnivel descendente del ST, sugestivo de efecto digitálico. En la práctica, esa combinación obliga a revisar digoxina, potasio y cardiopatía subyacente.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 59, pp. 117-118"
+  },
+  {
+    modulo: "Caso 5 · Dolor Torácico",
+    titulo: "Síndrome coronario con elevación del ST",
+    escenario: "Paciente con dolor torácico central de una hora de evolución. El trazado debe clasificarse sin demora por territorio y estrategia de reperfusión.",
+    img: "/assent/figures/case-68.jpg",
+    alt: "ECG con elevación del ST anterior y cambios recíprocos",
+    opciones: [
+      "Pericarditis aguda",
+      "Infarto agudo de miocardio anterior con isquemia inferior",
+      "Hipertrofia ventricular izquierda con strain",
+      "Tromboembolismo pulmonar"
+    ],
+    correcta: 1,
+    correctaTexto: "Infarto agudo de miocardio anterior con isquemia inferior",
+    explicacion: "La bibliografía identifica ondas Q en V2-V4, elevación del ST en I, aVL y V2-V5 y depresión del ST en III y aVF. Ese patrón corresponde a IAM anterior agudo con repercusión inferior y obliga a reperfusión urgente si no hay contraindicaciones.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 68, pp. 135-136"
+  },
+  {
+    modulo: "Caso 6 · Isquemia Inducible",
+    titulo: "ECG basal poco llamativo y prueba de esfuerzo positiva",
+    escenario: "Varón de 50 años con angina de esfuerzo. El caso enseña que un ECG basal casi normal no excluye isquemia si la clínica es muy sugestiva.",
+    img: "/assent/figures/case-87.jpg",
+    alt: "ECG basal y de esfuerzo con cambios de isquemia",
+    opciones: [
+      "Prueba de esfuerzo sin cambios significativos",
+      "Isquemia inducible por esfuerzo con cambios diagnósticos del ST",
+      "Síndrome de Brugada tipo 1",
+      "Hiperpotasemia severa"
+    ],
+    correcta: 1,
+    correctaTexto: "Isquemia inducible por esfuerzo con cambios diagnósticos del ST",
+    explicacion: "El ECG superior tiene cambios de T muy inespecíficos, pero el inferior muestra depresión del ST en V2-V4 y elevación transitoria del ST en II, III y aVF durante el esfuerzo. La respuesta bibliográfica lo interpreta como isquemia inducible clínicamente relevante.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 87, pp. 173-174"
+  },
+  {
+    modulo: "Caso 7 · Bloqueos",
+    titulo: "Mareo y trastorno avanzado de conducción",
+    escenario: "Varón de 70 años con mareo. El hallazgo clave no es solo el PR o el QRS, sino la combinación de bloqueo AV con afectación multifascicular.",
+    img: "/assent/figures/case-113.jpg",
+    alt: "ECG con bloqueo 2 a 1, BRD y hemibloqueo anterior izquierdo",
+    opciones: [
+      "Bloqueo AV de primer grado aislado",
+      "Bloqueo de segundo grado 2:1 con BRD y hemibloqueo anterior izquierdo",
+      "Fibrilación auricular con respuesta rápida",
+      "Bloqueo de rama izquierda aislado sin repercusión"
+    ],
+    correcta: 1,
+    correctaTexto: "Bloqueo de segundo grado 2:1 con BRD y hemibloqueo anterior izquierdo",
+    explicacion: "La respuesta bibliográfica describe bloqueo 2:1, desviación izquierda del eje y BRD, es decir, un contexto compatible con bloqueo trifascicular. En un paciente sintomático obliga a pensar en marcapasos permanente.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 113, pp. 225-226"
+  },
+  {
+    modulo: "Caso 8 · Electrolitos",
+    titulo: "FA, ondas U y efecto digitálico",
+    escenario: "Paciente posquirúrgica con náuseas y vómitos. El laboratorio no está disponible y el ECG debe orientar la hipótesis etiológica.",
+    img: "/assent/figures/case-122.jpg",
+    alt: "ECG con ondas U prominentes y depresión descendente del ST",
+    opciones: [
+      "Hipocalcemia aislada",
+      "Hipopotasemia con efecto digitálico en una paciente con FA",
+      "Infarto inferior evolucionado",
+      "Pericarditis aguda"
+    ],
+    correcta: 1,
+    correctaTexto: "Hipopotasemia con efecto digitálico en una paciente con FA",
+    explicacion: "La bibliografía destaca fibrilación auricular, ondas T aplanadas, ondas U evidentes y descenso descendente del ST, combinación típica de hipopotasemia y efecto de digoxina. Con ese patrón la corrección del potasio y la revisión del tratamiento son prioritarias.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 122, pp. 243-244"
+  },
+  {
+    modulo: "Caso 9 · Crecimiento de Cavidades",
+    titulo: "Voltajes altos y repolarización secundaria",
+    escenario: "Varón de 85 años con HTA de larga evolución, angina y mareos. El reto es diferenciar isquemia primaria de cambios secundarios por hipertrofia.",
+    img: "/assent/figures/case-124.jpg",
+    alt: "ECG con hipertrofia ventricular izquierda y strain",
+    opciones: [
+      "Hipertrofia ventricular izquierda con alteraciones secundarias de repolarización",
+      "Infarto inferior agudo",
+      "Síndrome de preexcitación",
+      "Derrame pericárdico masivo"
+    ],
+    correcta: 0,
+    correctaTexto: "Hipertrofia ventricular izquierda con alteraciones secundarias de repolarización",
+    explicacion: "La respuesta bibliográfica describe ondas R altas, S profundas y T invertidas, junto con cardiomegalia radiográfica. El conjunto es típico de HVI con patrón de strain; la clínica obliga después a descartar estenosis aórtica o hipertensión avanzada.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 124, pp. 247-248"
+  },
+  {
+    modulo: "Caso 10 · Síncope de Alto Riesgo",
+    titulo: "Desmayo durante el ejercicio",
+    escenario: "Chaval de 15 años que se desmaya jugando al fútbol. El ECG debe analizarse pensando en riesgo arrítmico hereditario.",
+    img: "/assent/figures/case-125.jpg",
+    alt: "ECG con QT largo e inversión anterior de la onda T",
+    opciones: [
+      "Síndrome de QT largo congénito",
+      "Bloqueo de rama izquierda y síncope vasovagal",
+      "WPW tipo B",
+      "Hiperpotasemia moderada"
+    ],
+    correcta: 0,
+    correctaTexto: "Síndrome de QT largo congénito",
+    explicacion: "La bibliografía resume QT largo de 520 ms con síncope de esfuerzo y antecedente familiar de muerte súbita, una combinación altamente sugestiva de QT largo congénito. El riesgo arrítmico obliga a tratamiento y valoración especializada.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 125, pp. 249-250"
+  },
+  {
+    modulo: "Caso 11 · Fármacos y Tóxicos",
+    titulo: "Digoxina, FA y extrasístoles ventriculares",
+    escenario: "Mujer con insuficiencia cardiaca, anorexia y debilidad. El ECG muestra una interacción peligrosa entre tratamiento y electrolitos.",
+    img: "/assent/figures/case-134.jpg",
+    alt: "ECG con FA, ectopia ventricular y ondas U",
+    opciones: [
+      "Fibrilación auricular con extrasístoles ventriculares por toxicidad digitálica e hipopotasemia",
+      "Taquicardia supraventricular ortodrómica",
+      "Pericarditis con FA",
+      "Flutter auricular con bloqueo 4:1"
+    ],
+    correcta: 0,
+    correctaTexto: "Fibrilación auricular con extrasístoles ventriculares por toxicidad digitálica e hipopotasemia",
+    explicacion: "La respuesta bibliográfica destaca FA, extrasístoles ventriculares acopladas, ondas T planas con U prominentes y depresión del ST. Ese conjunto, junto con el contexto clínico, orienta a toxicidad digitálica potenciada por hipopotasemia.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 134, pp. 267-268"
+  },
+  {
+    modulo: "Caso 12 · Canalopatías",
+    titulo: "Síncope y patrón de Brugada",
+    escenario: "Varón de 40 años con desmayo. En este caso la clave está en no confundir un patrón de alto riesgo con un BRD inocente.",
+    img: "/assent/figures/case-144.jpg",
+    alt: "ECG con patrón de Brugada en V1-V2",
+    opciones: [
+      "Bloqueo de rama derecha aislado sin repercusión",
+      "Síndrome de Brugada",
+      "Hipertrofia ventricular izquierda severa",
+      "Pericarditis aguda"
+    ],
+    correcta: 1,
+    correctaTexto: "Síndrome de Brugada",
+    explicacion: "La bibliografía identifica un patrón RSR' con elevación descendente del ST en V1-V2 característico de Brugada. En un paciente con síncope, eso obliga a valoración especializada por riesgo de arritmias ventriculares malignas.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 144, pp. 287-288"
+  },
+  {
+    modulo: "Caso 13 · Preexcitación",
+    titulo: "PR corto y onda delta en reposo",
+    escenario: "Varón joven asintomático con HTA y hallazgo ECG llamativo. El reto es reconocer una preexcitación y no confundirla con hipertrofia aislada.",
+    img: "/assent/figures/case-145.jpg",
+    alt: "ECG con PR corto y onda delta compatible con WPW",
+    opciones: [
+      "ECG normal de deportista",
+      "Síndrome de Wolff-Parkinson-White tipo B",
+      "Hipertrofia ventricular izquierda sin preexcitación",
+      "Hipertrofia ventricular derecha"
+    ],
+    correcta: 1,
+    correctaTexto: "Síndrome de Wolff-Parkinson-White tipo B",
+    explicacion: "La respuesta bibliográfica describe PR muy corto, ascenso empastado del QRS (onda delta) y ensanchamiento del complejo. Ese patrón es un ejemplo clásico de preexcitación ventricular tipo WPW.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 145, pp. 289-290"
+  },
+  {
+    modulo: "Caso 14 · WPW de Alto Riesgo",
+    titulo: "Palpitaciones con taquicardia ancha e irregular",
+    escenario: "Mujer de 30 años con palpitaciones rápidas cada vez más intensas. El registro ambulatorio muestra el episodio típico y obliga a reconocer una situación peligrosa.",
+    img: "/assent/figures/case-146.jpg",
+    alt: "ECG de WPW con fibrilación auricular preexcitada",
+    opciones: [
+      "Taquicardia ventricular monomorfa sin preexcitación",
+      "Fibrilación auricular en síndrome de WPW",
+      "Flutter auricular con bloqueo de rama derecha",
+      "Bloqueo AV completo"
+    ],
+    correcta: 1,
+    correctaTexto: "Fibrilación auricular en síndrome de WPW",
+    explicacion: "La bibliografía señala PR corto, onda delta y, durante la crisis, taquicardia ancha e irregular. Ese patrón es muy sugestivo de FA preexcitada y requiere manejo especializado porque puede degenerar en arritmias ventriculares graves.",
+    fuente: "Hampton, 150 Problemas de ECG, caso 146, pp. 291-292"
+  }
+];
 
 function clearActiveNav() {
   $$('[data-session-id]').forEach(btn => btn.classList.remove('nav-active'));
@@ -489,28 +1204,55 @@ function renderSidebar() {
   });
 }
 
-function renderFigureCard(figure) {
-  if(!figure) return '';
+function renderBulletList(items, tone = 'blue') {
+  const palette = tone === 'red'
+    ? 'border-[#E67F61]/20 bg-[#E67F61]/5 text-[#7f3421]'
+    : 'border-[#355E86]/15 bg-[#DCEAF4]/35 text-slate-700';
 
   return `
-    <figure class="mt-8 md:mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-      <div class="flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 sm:px-5 py-3">
-        <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#355E86]">Lámina Bibliográfica</span>
-        <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">Uso autorizado</span>
-      </div>
-      <div class="p-3 sm:p-4 md:p-5 bg-slate-100">
-        <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
-          <img src="${figure.src}" alt="${figure.alt}" loading="lazy" decoding="async" class="w-full h-auto max-h-[70vh] object-contain bg-white">
-        </div>
-      </div>
-      <figcaption class="space-y-3 px-4 sm:px-5 pb-4 sm:pb-5">
-        <div>
-          <h5 class="text-sm sm:text-base font-bold text-[#1F2A36]">${figure.titulo}</h5>
-          <p class="mt-2 text-sm text-slate-600 leading-relaxed">${figure.descripcion}</p>
-        </div>
-        <p class="text-xs uppercase tracking-[0.14em] text-slate-400">${figure.fuente}</p>
-      </figcaption>
-    </figure>
+    <ul class="space-y-3">
+      ${items.map(item => `
+        <li class="flex items-start gap-3 rounded-xl border px-4 py-3 ${palette}">
+          <span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${tone === 'red' ? 'bg-[#E67F61]' : 'bg-[#355E86]'}"></span>
+          <span class="text-sm md:text-[15px] leading-relaxed">${item}</span>
+        </li>
+      `).join('')}
+    </ul>
+  `;
+}
+
+function renderSourcesList(items) {
+  return `
+    <ul class="space-y-2">
+      ${items.map(item => `
+        <li class="text-xs sm:text-sm text-slate-500 leading-relaxed border-b border-slate-100 pb-2">${item}</li>
+      `).join('')}
+    </ul>
+  `;
+}
+
+function renderGallery(gallery) {
+  return `
+    <div class="grid gap-5 md:gap-6 lg:grid-cols-2">
+      ${gallery.map(item => `
+        <figure class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+          <div class="flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3">
+            <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#355E86]">Lámina ECG</span>
+            <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">Bibliografía</span>
+          </div>
+          <div class="p-3 sm:p-4 bg-slate-100">
+            <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+              <img src="${item.src}" alt="${item.alt}" loading="eager" decoding="async" class="w-full h-auto object-contain bg-white">
+            </div>
+          </div>
+          <figcaption class="space-y-2 px-4 pb-4">
+            <h5 class="text-sm sm:text-base font-bold text-[#1F2A36]">${item.titulo}</h5>
+            <p class="text-sm text-slate-600 leading-relaxed">${item.descripcion}</p>
+            <p class="text-xs uppercase tracking-[0.14em] text-slate-400">${item.fuente}</p>
+          </figcaption>
+        </figure>
+      `).join('')}
+    </div>
   `;
 }
 
@@ -525,10 +1267,11 @@ function renderHome() {
         <div class="absolute -right-16 -top-16 sm:-right-20 sm:-top-20 w-48 h-48 sm:w-72 sm:h-72 md:w-96 md:h-96 bg-[#355E86]/10 rounded-full blur-[90px] md:blur-[140px]"></div>
         <div class="relative z-10">
           <h2 class="text-4xl sm:text-5xl md:text-7xl xl:text-8xl font-black text-[#1F2A36] tracking-tighter leading-none mb-6 md:mb-8 italic break-words">Microtaller<br><span class="text-[#355E86]">ECG</span></h2>
-          <p class="text-base sm:text-lg md:text-xl text-slate-500 font-light max-w-2xl leading-relaxed italic">Guía cerrada de adiestramiento técnico para residentes orientada exclusivamente a la toma de decisiones clínicas.</p>
+          <p class="text-base sm:text-lg md:text-xl text-slate-500 font-light max-w-2xl leading-relaxed italic">Guía cerrada de adiestramiento técnico para residentes orientada exclusivamente a la toma de decisiones clínicas, ahora reforzada con galerías ECG reales y casos clínicos razonados.</p>
           <div class="mt-8 md:mt-12 flex flex-wrap gap-3 sm:gap-4 md:gap-6">
              <div class="bg-white border-2 border-slate-100 text-slate-400 px-4 sm:px-6 md:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-md">14 Unidades Docentes</div>
-             <div class="bg-white border-2 border-[#C8A22A]/40 text-[#C8A22A] px-4 sm:px-6 md:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-md">Evidencia Médica</div>
+             <div class="bg-white border-2 border-[#C8A22A]/40 text-[#C8A22A] px-4 sm:px-6 md:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-md">26 Láminas ECG</div>
+             <div class="bg-white border-2 border-slate-100 text-slate-400 px-4 sm:px-6 md:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-md">14 Casos Clínicos</div>
           </div>
         </div>
       </div>
@@ -559,7 +1302,7 @@ function renderSession(id) {
   let ses = null;
   BLOQUES.forEach(b => { const f = b.sesiones.find(x => x.id === id); if(f) ses = f; });
   if(!ses) return;
-  const figure = RECURSOS_VISUALES[id];
+  const contenido = MODULOS_CONTENIDO[id];
 
   closeMobileSidebar();
   setActiveNav(id);
@@ -579,23 +1322,40 @@ function renderSession(id) {
       </div>
 
       <div class="grid lg:grid-cols-3 gap-6 md:gap-8 xl:gap-12">
-        <div class="lg:col-span-2">
-          <div class="card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl min-h-[320px]">
-            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-8 md:mb-12 border-b border-slate-50 pb-5 md:pb-6">Marco de Referencia</h4>
-            <div class="text-slate-700 leading-relaxed text-base md:text-lg">
-               <p>Se ha incorporado una lámina procedente de la bibliografía del proyecto para que cada módulo disponga de un apoyo visual coherente con el contenido clínico que trabaja.</p>
-               <p class="mt-4 text-sm sm:text-base text-slate-500">La imagen inferior resume el foco del módulo y sirve como referencia rápida para la discusión docente, la identificación de patrones y la correlación clínica.</p>
-               ${renderFigureCard(figure)}
-            </div>
+        <div class="lg:col-span-2 space-y-6 md:space-y-8">
+          <div class="card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl">
+            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6 md:mb-8 border-b border-slate-50 pb-5">Marco de Referencia</h4>
+            <p class="text-base md:text-lg font-semibold text-[#1F2A36] leading-relaxed">${contenido.objetivo}</p>
+            <p class="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">${contenido.resumen}</p>
+          </div>
+
+          <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
+            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">Qué Mirar Primero</h4>
+            ${renderBulletList(contenido.puntosClave)}
+          </div>
+
+          <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
+            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">Galería Bibliográfica</h4>
+            <p class="mb-6 text-sm sm:text-base text-slate-600 leading-relaxed">Se muestran varias láminas del fondo bibliográfico para que el módulo se entienda con apoyo visual real y no solo con texto descriptivo.</p>
+            ${renderGallery(contenido.galeria)}
+          </div>
+
+          <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
+            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">Fuentes Revisadas</h4>
+            ${renderSourcesList(contenido.fuentes)}
           </div>
         </div>
 
         <div class="space-y-6 md:space-y-8">
           <div class="bg-[#EEE8D8] p-6 sm:p-8 md:p-10 rounded-2xl shadow-tool border border-[#C8A22A]/10">
             <h4 class="text-[11px] font-bold text-[#355E86] uppercase tracking-widest mb-6 flex items-center gap-3">
-              <div class="w-2.5 h-2.5 bg-[#E67F61] rounded-full"></div> Concepto Clínico
+              <div class="w-2.5 h-2.5 bg-[#E67F61] rounded-full"></div> Perla Clínica
             </h4>
-            <p class="text-base sm:text-[17px] font-extrabold text-[#1F2A36] leading-relaxed italic">"No trate trazados, trate pacientes. El ECG es un complemento del juicio clínico médico."</p>
+            <p class="text-base sm:text-[17px] font-extrabold text-[#1F2A36] leading-relaxed italic">"${contenido.perla}"</p>
+          </div>
+          <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
+            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">Errores Frecuentes</h4>
+            ${renderBulletList(contenido.errores, 'red')}
           </div>
           <button onclick="toggleGlosario()" class="w-full bg-white p-5 sm:p-6 md:p-8 rounded-2xl text-[#C24F45] text-[10px] sm:text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-between gap-4 shadow-tool group">
             <span class="break-words text-left">Protocolo Seguridad</span><span class="text-2xl sm:text-3xl group-hover:rotate-12 transition-transform shrink-0">⚠</span>
@@ -615,38 +1375,41 @@ function renderEvaluation() {
     <div class="max-w-4xl mx-auto fade-in space-y-8 md:space-y-12 pb-16 md:pb-24">
       <div class="bg-[#1F2A36] text-white p-6 sm:p-8 md:p-12 xl:p-16 rounded-2xl shadow-tool">
         <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter mb-4 italic">Módulo de Evaluación</h2>
-        <p class="text-slate-400 text-xs sm:text-sm uppercase tracking-widest italic font-medium">Validación de competencias del programa (14 cuestiones)</p>
+        <p class="text-slate-400 text-xs sm:text-sm uppercase tracking-widest italic font-medium">14 casos clínicos con imagen ECG y feedback razonado</p>
       </div>
 
       <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
-        <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Caso de Apoyo</h4>
-        <p class="text-slate-700 leading-relaxed text-sm sm:text-base">La evaluación queda acompañada por una lámina de entrenamiento extraída de la bibliografía de casos ECG, manteniendo el mismo enfoque práctico del resto del microtaller.</p>
-        ${renderFigureCard(RECURSO_EVALUACION)}
+        <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Cómo usar este bloque</h4>
+        <p class="text-slate-700 leading-relaxed text-sm sm:text-base">Cada tarjeta muestra un caso clínico real extraído de la bibliografía del proyecto. Elige una opción y la app te dirá siempre cuál era la correcta y por qué, tanto si aciertas como si fallas.</p>
       </div>
       
       <div class="space-y-6 sm:space-y-8 md:space-y-12">
-        ${EVALUACION.map((item, idx) => `
-          <div class="card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl bg-white" id="q-container-${idx}">
+        ${CASOS_EVALUACION.map((item, idx) => `
+          <div class="evaluation-case card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl bg-white" id="q-container-${idx}">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-10">
-              <span class="bg-[#DCEAF4] text-[#355E86] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest border border-[#355E86]/10">${item.m}</span>
+              <span class="bg-[#DCEAF4] text-[#355E86] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest border border-[#355E86]/10">${item.modulo}</span>
               <span class="text-slate-300 text-xs font-mono font-bold tracking-widest">PROGRESO ${Math.round((idx+1)/14*100)}%</span>
             </div>
-            <p class="text-xl sm:text-2xl font-bold mb-6 md:mb-10 text-[#1F2A36] leading-tight break-words">${item.q}</p>
+            <h3 class="text-xl sm:text-2xl font-bold text-[#1F2A36] leading-tight break-words">${item.titulo}</h3>
+            <p class="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">${item.escenario}</p>
+            <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+              <div class="p-3 sm:p-4 bg-slate-100">
+                <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+                  <img src="${item.img}" alt="${item.alt}" loading="eager" decoding="async" class="w-full h-auto object-contain bg-white">
+                </div>
+              </div>
+              <div class="px-4 sm:px-5 pb-4">
+                <p class="text-xs uppercase tracking-[0.14em] text-slate-400">${item.fuente}</p>
+              </div>
+            </div>
             <div class="grid gap-4 md:gap-5">
-              ${item.a.map((ans, aIdx) => `
-                <button onclick="checkAnswer(this, ${idx}, ${aIdx}, ${item.c})" class="option-btn w-full text-left p-4 sm:p-5 md:p-6 rounded-xl border-2 border-slate-100 bg-slate-50 hover:bg-[#DCEAF4] hover:border-slate-200 transition-all text-sm font-semibold text-slate-700 break-words">
+              ${item.opciones.map((ans, aIdx) => `
+                <button onclick="checkCaseAnswer(this, ${idx}, ${aIdx})" class="option-btn w-full text-left p-4 sm:p-5 md:p-6 rounded-xl border-2 border-slate-100 bg-slate-50 hover:bg-[#DCEAF4] hover:border-slate-200 transition-all text-sm font-semibold text-slate-700 break-words">
                   ${ans}
                 </button>
               `).join('')}
             </div>
-            <div id="feedback-${idx}" class="feedback-box">
-               <div class="flex items-center gap-2 mb-3">
-                 <span id="feedback-badge-${idx}" class="text-[10px] font-black uppercase px-2 py-0.5 rounded"></span>
-               </div>
-               <div class="text-slate-800 font-medium leading-relaxed italic">
-                 <strong>Justificación Técnica:</strong> ${item.f}
-               </div>
-            </div>
+            <div id="feedback-${idx}" class="feedback-box"></div>
           </div>
         `).join('')}
       </div>
@@ -660,11 +1423,13 @@ function renderEvaluation() {
   main.scrollTo(0,0);
 }
 
-function checkAnswer(btn, qIdx, aIdx, correctIdx) {
+function checkCaseAnswer(btn, qIdx, aIdx) {
+  const caso = CASOS_EVALUACION[qIdx];
   const container = $(`q-container-${qIdx}`);
   const feedback = $(`feedback-${qIdx}`);
-  const badge = $(`feedback-badge-${qIdx}`);
   const options = $$('.option-btn', container);
+  const correctIdx = caso.correcta;
+  const isCorrect = aIdx === correctIdx;
   
   options.forEach(b => {
     b.disabled = true;
@@ -673,20 +1438,37 @@ function checkAnswer(btn, qIdx, aIdx, correctIdx) {
   
   btn.classList.remove('opacity-50');
   
-  if(aIdx === correctIdx) {
+  if(isCorrect) {
     btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800', '!opacity-100');
-    feedback.classList.add('bg-green-50', 'border-green-300', 'text-green-900', 'block');
-    badge.textContent = "Respuesta Correcta";
-    badge.classList.add('bg-green-500', 'text-white');
   } else {
     btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800', '!opacity-100');
     options[correctIdx].classList.add('bg-green-50', 'border-green-300', 'text-green-700', '!opacity-100', 'opacity-100');
-    feedback.classList.add('bg-red-50', 'border-red-300', 'text-red-900', 'block');
-    badge.textContent = "Respuesta Incorrecta";
-    badge.classList.add('bg-red-500', 'text-white');
   }
+
+  feedback.className = 'feedback-box block fade-in';
+  feedback.classList.add(
+    isCorrect ? 'bg-green-50' : 'bg-red-50',
+    isCorrect ? 'border-green-300' : 'border-red-300',
+    isCorrect ? 'text-green-900' : 'text-red-900'
+  );
+  feedback.innerHTML = `
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+      <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${isCorrect ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}">
+        ${isCorrect ? 'Respuesta Correcta' : 'Respuesta Incorrecta'}
+      </span>
+      <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-white/80 text-[#1F2A36]">
+        Correcta: ${caso.correctaTexto}
+      </span>
+    </div>
+    <div class="text-slate-800 font-medium leading-relaxed">
+      <strong>Por qué es la correcta:</strong> ${caso.explicacion}
+    </div>
+    <div class="mt-4 text-[11px] uppercase tracking-[0.14em] text-slate-500">
+      ${caso.fuente}
+    </div>
+  `;
   
-  feedback.classList.add('fade-in');
+  feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function toggleGlosario() { 
