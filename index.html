@@ -133,6 +133,13 @@
       overflow: hidden;
     }
 
+    .figure-note-card {
+      border-radius: 18px;
+      border: 1px solid rgba(21, 34, 48, 0.08);
+      background: rgba(255,255,255,0.78);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.62);
+    }
+
     .step-list {
       counter-reset: module-step;
     }
@@ -353,8 +360,8 @@
 </div>
 
 <div id="figureModal" class="fixed inset-0 z-[120] hidden bg-[#0f1724]/72 backdrop-blur-[5px] p-4" onclick="closeFigure()">
-  <div class="mx-auto flex h-full max-w-6xl items-center justify-center">
-    <div class="figure-modal-shell w-full max-w-5xl" onclick="event.stopPropagation()">
+  <div class="mx-auto flex h-full max-w-7xl items-center justify-center">
+    <div class="figure-modal-shell w-full max-w-6xl" onclick="event.stopPropagation()">
       <div class="flex items-start justify-between gap-6 border-b border-slate-200/80 px-5 py-4 sm:px-6 sm:py-5">
         <div class="min-w-0">
           <p id="figureModalKicker" class="text-[10px] font-black uppercase tracking-[0.2em] text-[#365978]">Atlas ECG</p>
@@ -364,8 +371,32 @@
         <button onclick="closeFigure()" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-[#365978] hover:border-[#365978]/20 transition-colors" aria-label="Cerrar imagen">×</button>
       </div>
       <div class="bg-[linear-gradient(180deg,rgba(243,247,251,0.92),rgba(255,255,255,0.95))] p-4 sm:p-5 md:p-6">
-        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <img id="figureModalImg" src="" alt="" class="w-full h-auto max-h-[72vh] object-contain bg-white">
+        <div class="grid gap-5 xl:grid-cols-[minmax(0,1.4fr),340px] xl:items-start">
+          <div class="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">
+            <img id="figureModalImg" src="" alt="" class="w-full h-auto max-h-[72vh] object-contain bg-white">
+          </div>
+          <aside id="figureModalNotes" class="space-y-3">
+            <div id="figureModalDescriptionWrap" class="figure-note-card p-4 sm:p-5">
+              <p class="text-[10px] font-black uppercase tracking-[0.18em] text-[#365978]">Qué muestra</p>
+              <p id="figureModalDescription" class="mt-3 text-sm leading-relaxed text-slate-600"></p>
+            </div>
+            <div id="figureModalFocusWrap" class="figure-note-card p-4 sm:p-5 hidden">
+              <p class="text-[10px] font-black uppercase tracking-[0.18em] text-[#365978]">Qué debes reconocer</p>
+              <p id="figureModalFocus" class="mt-3 text-sm leading-relaxed text-slate-700"></p>
+            </div>
+            <div id="figureModalTrapWrap" class="figure-note-card p-4 sm:p-5 hidden">
+              <p class="text-[10px] font-black uppercase tracking-[0.18em] text-[#cb6b56]">Error frecuente</p>
+              <p id="figureModalTrap" class="mt-3 text-sm leading-relaxed text-slate-700"></p>
+            </div>
+            <div id="figureModalApplicationWrap" class="figure-note-card p-4 sm:p-5 hidden">
+              <p class="text-[10px] font-black uppercase tracking-[0.18em] text-[#9e8450]">Aplicación clínica</p>
+              <p id="figureModalApplication" class="mt-3 text-sm leading-relaxed text-slate-700"></p>
+            </div>
+            <a id="figureModalLink" href="#" target="_blank" rel="noopener noreferrer" class="figure-note-card hidden items-center justify-between gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-[0.18em] text-[#365978]">
+              <span>Ver caso fuente</span>
+              <span class="text-base">↗</span>
+            </a>
+          </aside>
         </div>
       </div>
     </div>
@@ -389,6 +420,15 @@ function normalizeAssetPath(path) {
 function normalizeGalleryEntry(item) {
   if(!item || typeof item !== 'object') return item;
   return { ...item, src: normalizeAssetPath(item.src) };
+}
+
+function escapeAttr(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 const BLOQUES = [
@@ -1266,8 +1306,210 @@ const CASOS_EVALUACION = [
     correctaTexto: "Fibrilación auricular en síndrome de WPW",
     explicacion: "La bibliografía señala PR corto, onda delta y, durante la crisis, taquicardia ancha e irregular. Ese patrón es muy sugestivo de FA preexcitada y requiere manejo especializado porque puede degenerar en arritmias ventriculares graves.",
     fuente: "Hampton, 150 Problemas de ECG, caso 146, pp. 291-292"
+  },
+  {
+    modulo: "Caso 15 · QT Largo Congénito",
+    titulo: "Síncope tipo 'convulsión' en mujer joven",
+    escenario: "Mujer de 21 años con episodios etiquetados como convulsivos, sin fármacos ni alteraciones electrolíticas. El ECG debe hacer pensar en una canalopatía hereditaria antes que en una causa neurológica aislada.",
+    img: "assent/wavemaven/case-1.gif",
+    alt: "ECG con QT muy prolongado y ondas T anchas",
+    opciones: [
+      "Síndrome de QT largo congénito",
+      "Hiperpotasemia con ensanchamiento del QRS",
+      "Preexcitación tipo WPW",
+      "Pericarditis aguda"
+    ],
+    correcta: 0,
+    correctaTexto: "Síndrome de QT largo congénito",
+    explicacion: "Wave-Maven describe un QT de unos 600 ms con ondas T anchas y melladas en precordiales, patrón muy sugestivo de QT largo hereditario. En una paciente con síncope o episodios convulsivos aparentes, el riesgo real es torsade de pointes y muerte súbita, por lo que requiere valoración especializada.",
+    fuente: "ECG Wave-Maven, caso 1 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=0&ans=1&caseid=1",
+    pistaVisual: "Mide el QT en las precordiales y fíjate en la onda T ancha, prolongada y con muescas."
+  },
+  {
+    modulo: "Caso 16 · QT Corto / Hipercalcemia",
+    titulo: "Debilidad y estreñimiento con QT corto",
+    escenario: "Varón de 49 años con debilidad muscular progresiva y estreñimiento. La pista no está en un ST elevado ni en ondas U, sino en una repolarización demasiado breve para la frecuencia.",
+    img: "assent/wavemaven/case-9.gif",
+    alt: "ECG con QT corto por hipercalcemia",
+    opciones: [
+      "Hipercalcemia con QT corto",
+      "Hipocalcemia con QT prolongado",
+      "Brugada tipo 1",
+      "Infarto anterior agudo"
+    ],
+    correcta: 0,
+    correctaTexto: "Hipercalcemia con QT corto",
+    explicacion: "La clave del caso es un ST muy corto que deja un QT claramente abreviado, patrón clásico de hipercalcemia. Wave-Maven señala que el paciente tenía un calcio sérico muy elevado por hiperparatiroidismo; el ECG orienta el diagnóstico antes de ver la analítica.",
+    fuente: "ECG Wave-Maven, caso 9 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=8&ans=1&caseid=9",
+    pistaVisual: "Observa cuánto se acorta el segmento ST: el QT global queda anormalmente breve."
+  },
+  {
+    modulo: "Caso 17 · Hiperpotasemia Severa",
+    titulo: "Insuficiencia renal con QRS desmesuradamente ancho",
+    escenario: "Varón anciano con mareo e insuficiencia renal aguda. El reto es distinguir un bloqueo de rama 'habitual' de un patrón metabólico letal.",
+    img: "assent/wavemaven/case-10.gif",
+    alt: "ECG con hiperpotasemia severa y QRS muy ancho",
+    opciones: [
+      "Bloqueo de rama izquierda aislado crónico",
+      "Hiperpotasemia severa",
+      "Preexcitación ventricular",
+      "Pericarditis urémica"
+    ],
+    correcta: 1,
+    correctaTexto: "Hiperpotasemia severa",
+    explicacion: "Wave-Maven describe un QRS de unos 240 ms, T picudas, PR prolongado y aplanamiento de P, una constelación mucho más extrema que la de un simple BRI. En este contexto la prioridad es tratar la hiperpotasemia antes de que evolucione a patrón sinusoidal y asistolia.",
+    fuente: "ECG Wave-Maven, caso 10 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=9&ans=1&caseid=10",
+    pistaVisual: "Busca tres pistas simultáneas: QRS extremadamente ancho, T picudas y ondas P aplanadas."
+  },
+  {
+    modulo: "Caso 18 · Isquemia Crítica",
+    titulo: "Dolor torácico reciente y T negativas profundas",
+    escenario: "Varón de 51 años con válvula aórtica bicúspide, HTA y dolor torácico dos días antes del ECG. El trazo ya no tiene elevación activa del ST, pero sigue diciendo que algo importante pasó.",
+    img: "assent/wavemaven/case-11.gif",
+    alt: "ECG con ondas T profundamente invertidas compatibles con patrón de Wellens",
+    opciones: [
+      "Repolarización precoz benigna",
+      "Isquemia anterior crítica tipo patrón de Wellens",
+      "Hipertrofia ventricular derecha",
+      "Bloqueo AV completo"
+    ],
+    correcta: 1,
+    correctaTexto: "Isquemia anterior crítica tipo patrón de Wellens",
+    explicacion: "Wave-Maven interpreta las T profundamente invertidas de cara anterior como un patrón de isquemia o infarto sin onda Q, compatible con el fenotipo de Wellens. Aunque el dolor haya cedido, obliga a pensar en lesión crítica de la DA proximal y no en un cambio inespecífico.",
+    fuente: "ECG Wave-Maven, caso 11 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=10&ans=1&caseid=11",
+    pistaVisual: "Revisa las precordiales anteriores: la profundidad y simetría de la inversión de T es la pista."
+  },
+  {
+    modulo: "Caso 19 · Taquicardia Auricular",
+    titulo: "Insuficiencia cardiaca con taquicardia auricular y bloqueo",
+    escenario: "Varón de 54 años con insuficiencia cardiaca crónica. La pregunta no es solo si va rápido, sino si las ondas auriculares y ventriculares guardan una relación sinusal.",
+    img: "assent/wavemaven/case-23.gif",
+    alt: "ECG con taquicardia auricular y bloqueo AV variable",
+    opciones: [
+      "Taquicardia sinusal por insuficiencia cardiaca",
+      "Taquicardia auricular con bloqueo AV variable",
+      "Flutter auricular típico a 300 lpm",
+      "Bloqueo AV completo"
+    ],
+    correcta: 1,
+    correctaTexto: "Taquicardia auricular con bloqueo AV variable",
+    explicacion: "Wave-Maven subraya que la frecuencia auricular es demasiado alta para ser sinusal en reposo y demasiado lenta para un flutter típico, además de existir bloqueo AV variable. Es un buen recordatorio de que una taquicardia 'parecida' a sinusal puede no serlo.",
+    fuente: "ECG Wave-Maven, caso 23 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=22&ans=1&caseid=23",
+    pistaVisual: "Compara la frecuencia auricular con la ventricular: el cambio del PR y de la conducción es la clave."
+  },
+  {
+    modulo: "Caso 20 · Cicatriz Isquémica de Riesgo",
+    titulo: "Superviviente de fibrilación ventricular",
+    escenario: "Varón de 67 años tras una parada por fibrilación ventricular. El ECG no muestra un infarto agudo florido, sino las huellas de una cardiopatía estructural muy arrítmógena.",
+    img: "assent/wavemaven/case-28.gif",
+    alt: "ECG con ondas Q anteriores y patrón compatible con cicatriz isquémica extensa",
+    opciones: [
+      "Coronariopatía crónica con cicatriz ventricular extensa",
+      "Pericarditis aguda",
+      "WPW con delta sutil",
+      "Hipopotasemia aislada"
+    ],
+    correcta: 0,
+    correctaTexto: "Coronariopatía crónica con cicatriz ventricular extensa",
+    explicacion: "Wave-Maven describe Q patológicas anteriores, mala progresión de R y un patrón compatible con aneurisma o gran cicatriz ventricular en un paciente con enfermedad coronaria severa. Aquí el ECG orienta hacia sustrato arrítmico crónico más que hacia un episodio eléctrico primario aislado.",
+    fuente: "ECG Wave-Maven, caso 28 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=27&ans=1&caseid=28",
+    pistaVisual: "No te quedes solo con el BRD: busca las Q anteriores y la progresión de R anormalmente pobre."
+  },
+  {
+    modulo: "Caso 21 · Hipocalcemia",
+    titulo: "QT largo a expensas del ST",
+    escenario: "Paciente posquirúrgica en la que solo puedes pedir un análisis urgente. El ECG sugiere que la repolarización se está alargando por una alteración del calcio.",
+    img: "assent/wavemaven/case-58.gif",
+    alt: "ECG con QT prolongado por hipocalcemia",
+    opciones: [
+      "Hipocalcemia con prolongación del ST y del QT",
+      "Hiperpotasemia con T picudas",
+      "Infarto inferior agudo",
+      "Hipertrofia ventricular izquierda con strain"
+    ],
+    correcta: 0,
+    correctaTexto: "Hipocalcemia con prolongación del ST y del QT",
+    explicacion: "Wave-Maven explica que el QT se prolonga porque el segmento ST está 'estirado', un patrón más propio de hipocalcemia que de otras causas de QT largo. Es un buen caso para diferenciar un QT largo por electrolitos de otro por fármacos o canalopatía.",
+    fuente: "ECG Wave-Maven, caso 58 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=57&ans=1&caseid=58",
+    pistaVisual: "Mira dónde se gana tiempo: aquí el QT se alarga sobre todo por un ST prolongado."
+  },
+  {
+    modulo: "Caso 22 · FA con Bloqueo Completo",
+    titulo: "Pulso lento en fibrilación auricular",
+    escenario: "Varón de 86 años con fatiga y pulso lento. El trazado obliga a preguntarse por qué la respuesta ventricular es tan pausada y regularizada.",
+    img: "assent/wavemaven/case-73.gif",
+    alt: "ECG con fibrilación auricular, bloqueo AV completo y escape nodal",
+    opciones: [
+      "Fibrilación auricular con respuesta rápida",
+      "Fibrilación auricular con bloqueo AV completo y escape de la unión",
+      "Flutter auricular con conducción 2:1",
+      "Ritmo sinusal con extrasístoles bloqueadas"
+    ],
+    correcta: 1,
+    correctaTexto: "Fibrilación auricular con bloqueo AV completo y escape de la unión",
+    explicacion: "Wave-Maven interpreta una FA con respuesta ventricular muy lenta y regularizada, compatible con bloqueo AV completo y ritmo de escape de la unión. En un paciente así hay que descartar causas reversibles, pero con frecuencia acaba necesitando marcapasos.",
+    fuente: "ECG Wave-Maven, caso 73 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=72&ans=1&caseid=73",
+    pistaVisual: "Fíjate en la disociación entre actividad auricular caótica y un ventrículo sorprendentemente lento y bastante regular."
+  },
+  {
+    modulo: "Caso 23 · Dispositivos",
+    titulo: "FA con latido de pseudo-fusión",
+    escenario: "Caso de ritmo irregular en el que la pista principal está concentrada en un solo latido. El quinto complejo resuelve la pregunta si se mira con calma.",
+    img: "assent/wavemaven/case-144.gif",
+    alt: "ECG con fibrilación auricular y latido de pseudo-fusión por marcapasos",
+    opciones: [
+      "Fibrilación auricular con una espiga de marcapasos ventricular y pseudo-fusión",
+      "Flutter auricular con conducción variable",
+      "Taquicardia ventricular no sostenida",
+      "Síndrome de Brugada"
+    ],
+    correcta: 0,
+    correctaTexto: "Fibrilación auricular con una espiga de marcapasos ventricular y pseudo-fusión",
+    explicacion: "La respuesta oficial de Wave-Maven identifica FA con respuesta moderada y una única espiga de marcapasos ventricular que cae dentro del QRS del quinto latido. Eso produce un latido de pseudo-fusión: hay espiga, pero la morfología del QRS no es un híbrido verdadero.",
+    fuente: "ECG Wave-Maven, caso 144 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=143&ans=1&caseid=144",
+    pistaVisual: "Cuenta latidos y detente en el quinto: la espiga está ahí, pero el QRS no cambia como en una fusión real."
+  },
+  {
+    modulo: "Caso 24 · Preexcitación",
+    titulo: "Palpitaciones y síncope en varón joven",
+    escenario: "Adulto joven con palpitaciones y síncope. El ECG tiene la tríada clásica de preexcitación y además permite sospechar la localización aproximada de la vía accesoria.",
+    img: "assent/wavemaven/case-193.gif",
+    alt: "ECG con tríada clásica de preexcitación tipo WPW",
+    opciones: [
+      "Bloqueo de rama derecha con hemibloqueo",
+      "Síndrome de Wolff-Parkinson-White",
+      "Hipertrofia ventricular izquierda",
+      "Pericarditis constrictiva"
+    ],
+    correcta: 1,
+    correctaTexto: "Síndrome de Wolff-Parkinson-White",
+    explicacion: "Wave-Maven resume la tríada clásica del WPW: PR corto, QRS ancho y ondas delta. En este caso, la polaridad de la delta incluso orienta hacia una vía accesoria posterior izquierda, recordando que la preexcitación no es solo un hallazgo visual sino un sustrato arrítmico real.",
+    fuente: "ECG Wave-Maven, caso 193 · BIDMC/Harvard Medical School",
+    origen: "Wave-Maven",
+    enlace: "https://ecg.bidmc.harvard.edu/maven/dispcase.asp?rownum=192&ans=1&caseid=193",
+    pistaVisual: "Busca la tríada completa: PR corto, ensanchamiento del QRS y onda delta en varias derivaciones."
   }
 ];
+
+const TOTAL_EVALUATION_CASES = CASOS_EVALUACION.length;
 
 const MODULOS_APOYO = {
   s1: {
@@ -1587,36 +1829,77 @@ function renderStepList(items) {
   `;
 }
 
-function renderGallery(gallery) {
+function renderGallery(gallery, contenido, apoyo) {
   return `
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      ${gallery.map(item => `
+      ${gallery.map((item, idx) => {
+        const focus = (contenido?.puntosClave || [])[idx % Math.max((contenido?.puntosClave || []).length, 1)] || '';
+        const trap = (contenido?.errores || [])[idx % Math.max((contenido?.errores || []).length, 1)] || '';
+        const application = (apoyo?.ruta || [])[idx % Math.max((apoyo?.ruta || []).length, 1)] || contenido?.perla || '';
+        return `
         <figure class="gallery-card">
-          <button type="button" class="gallery-media text-left" data-src="${item.src}" data-alt="${item.alt}" data-title="${item.titulo}" data-source="${item.fuente}" onclick="openFigure(this)">
+          <button
+            type="button"
+            class="gallery-media text-left"
+            data-src="${escapeAttr(item.src)}"
+            data-alt="${escapeAttr(item.alt)}"
+            data-title="${escapeAttr(item.titulo)}"
+            data-source="${escapeAttr(item.fuente)}"
+            data-kicker="Atlas ECG"
+            data-description="${escapeAttr(item.descripcion || contenido?.resumen || '')}"
+            data-focus="${escapeAttr(focus)}"
+            data-trap="${escapeAttr(trap)}"
+            data-application="${escapeAttr(application)}"
+            onclick="openFigure(this)"
+          >
             <img src="${item.src}" alt="${item.alt}" loading="eager" decoding="async">
           </button>
           <figcaption class="space-y-2 px-4 pb-4 pt-3">
             <div class="flex items-center justify-between gap-3">
               <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#365978]">Atlas ECG</span>
-              <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">Ampliar</span>
+              <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">Abrir slide</span>
             </div>
             <h5 class="text-sm font-semibold leading-snug text-[#152230]">${item.titulo}</h5>
             <p class="text-[11px] uppercase tracking-[0.14em] text-slate-400">${item.fuente}</p>
           </figcaption>
         </figure>
-      `).join('')}
+      `;
+      }).join('')}
     </div>
   `;
+}
+
+function setFigureSection(contentId, wrapId, value) {
+  const content = $(contentId);
+  const wrap = $(wrapId);
+  if(!content || !wrap) return false;
+  const text = (value || '').trim();
+  content.textContent = text;
+  wrap.classList.toggle('hidden', !text);
+  return Boolean(text);
 }
 
 function openFigure(trigger) {
   const modal = $('figureModal');
   const img = $('figureModalImg');
   if(!modal || !img || !trigger) return;
+  $('figureModalKicker').textContent = trigger.dataset.kicker || 'Atlas ECG';
   $('figureModalTitle').textContent = trigger.dataset.title || '';
   $('figureModalSource').textContent = trigger.dataset.source || '';
   img.src = trigger.dataset.src || '';
   img.alt = trigger.dataset.alt || trigger.dataset.title || '';
+  const hasDescription = setFigureSection('figureModalDescription', 'figureModalDescriptionWrap', trigger.dataset.description || '');
+  const hasFocus = setFigureSection('figureModalFocus', 'figureModalFocusWrap', trigger.dataset.focus || '');
+  const hasTrap = setFigureSection('figureModalTrap', 'figureModalTrapWrap', trigger.dataset.trap || '');
+  const hasApplication = setFigureSection('figureModalApplication', 'figureModalApplicationWrap', trigger.dataset.application || '');
+  const link = $('figureModalLink');
+  const href = (trigger.dataset.link || '').trim();
+  if(link) {
+    link.href = href || '#';
+    link.classList.toggle('hidden', !href);
+    link.classList.toggle('inline-flex', Boolean(href));
+  }
+  $('figureModalNotes')?.classList.toggle('hidden', !(hasDescription || hasFocus || hasTrap || hasApplication || href));
   modal.classList.remove('hidden');
   document.body.classList.add('overflow-hidden');
 }
@@ -1628,6 +1911,17 @@ function closeFigure() {
   modal.classList.add('hidden');
   img.src = '';
   img.alt = '';
+  $('figureModalTitle').textContent = '';
+  $('figureModalSource').textContent = '';
+  $('figureModalDescription').textContent = '';
+  $('figureModalFocus').textContent = '';
+  $('figureModalTrap').textContent = '';
+  $('figureModalApplication').textContent = '';
+  ['figureModalDescriptionWrap', 'figureModalFocusWrap', 'figureModalTrapWrap', 'figureModalApplicationWrap'].forEach(id => $(id)?.classList.add('hidden'));
+  $('figureModalLink')?.classList.add('hidden');
+  $('figureModalLink')?.classList.remove('inline-flex');
+  if($('figureModalLink')) $('figureModalLink').href = '#';
+  $('figureModalNotes')?.classList.remove('hidden');
   if(!$('mobileSidebar') || !$('mobileSidebar').classList.contains('is-open')) {
     document.body.classList.remove('overflow-hidden');
   }
@@ -1665,7 +1959,7 @@ function renderHome() {
               </div>
             </div>
             <div class="metric-pill">
-              <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[#cb6b56]/12 text-[#cb6b56] text-xs font-black">14</span>
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[#cb6b56]/12 text-[#cb6b56] text-xs font-black">${TOTAL_EVALUATION_CASES}</span>
               <div>
                 <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Evaluación</p>
                 <p class="text-sm font-semibold text-[#152230]">Casos con feedback</p>
@@ -1820,7 +2114,7 @@ function renderSession(id) {
               </div>
               <span class="text-[10px] font-black uppercase tracking-[0.16em] text-[#365978]">${atlasCount} piezas</span>
             </div>
-            <div class="mt-5">${renderGallery(contenido.galeria || [])}</div>
+            <div class="mt-5">${renderGallery(contenido.galeria || [], contenido, apoyo)}</div>
           </section>
         </div>
 
@@ -1870,10 +2164,10 @@ function renderEvaluation() {
           <div>
             <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#365978]">Módulo de evaluación</p>
             <h2 class="mt-3 text-3xl sm:text-4xl md:text-5xl font-black tracking-[-0.05em] text-[#152230]">Casos clínicos con feedback razonado</h2>
-            <p class="mt-3 text-sm sm:text-base leading-relaxed text-slate-600">Cada caso se responde dentro de la propia tarjeta y la app devuelve siempre la opción correcta con su explicación clínica.</p>
+            <p class="mt-3 text-sm sm:text-base leading-relaxed text-slate-600">Cada caso se responde dentro de la propia tarjeta y la app devuelve siempre la opción correcta con su explicación clínica. Las imágenes pueden ampliarse para leer el trazado sin perder detalle.</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <span class="rounded-full border border-slate-200 bg-white/85 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">14 casos</span>
+            <span class="rounded-full border border-slate-200 bg-white/85 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">${TOTAL_EVALUATION_CASES} casos</span>
             <span class="rounded-full border border-slate-200 bg-white/85 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">Imagen ECG real</span>
           </div>
         </div>
@@ -1888,19 +2182,35 @@ function renderEvaluation() {
         ${CASOS_EVALUACION.map((item, idx) => `
           <div class="evaluation-case card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl bg-white" id="q-container-${idx}">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-10">
-              <span class="bg-[#DCEAF4] text-[#355E86] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest border border-[#355E86]/10">${item.modulo}</span>
-              <span class="text-slate-300 text-xs font-mono font-bold tracking-widest">PROGRESO ${Math.round((idx+1)/14*100)}%</span>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="bg-[#DCEAF4] text-[#355E86] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest border border-[#355E86]/10">${item.modulo}</span>
+                ${item.origen ? `<span class="border border-slate-200 bg-white text-slate-400 text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest">${item.origen}</span>` : ''}
+              </div>
+              <span class="text-slate-300 text-xs font-mono font-bold tracking-widest">PROGRESO ${Math.round((idx+1)/TOTAL_EVALUATION_CASES*100)}%</span>
             </div>
             <h3 class="text-xl sm:text-2xl font-bold text-[#1F2A36] leading-tight break-words">${item.titulo}</h3>
             <p class="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">${item.escenario}</p>
             <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
               <div class="p-3 sm:p-4 bg-slate-100">
-                <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
-                  <img src="${item.img}" alt="${item.alt}" loading="eager" decoding="async" class="w-full h-auto object-contain bg-white">
-                </div>
+                <button
+                  type="button"
+                  class="block w-full overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200"
+                  data-src="${escapeAttr(item.img)}"
+                  data-alt="${escapeAttr(item.alt)}"
+                  data-title="${escapeAttr(item.titulo)}"
+                  data-source="${escapeAttr(item.fuente)}"
+                  data-kicker="Caso clínico ECG"
+                  data-description="${escapeAttr(item.escenario || '')}"
+                  data-focus="${escapeAttr(item.pistaVisual || '')}"
+                  data-link="${escapeAttr(item.enlace || '')}"
+                  onclick="openFigure(this)"
+                >
+                  <img src="${item.img}" alt="${item.alt}" loading="lazy" decoding="async" class="w-full h-auto object-contain bg-white">
+                </button>
               </div>
-              <div class="px-4 sm:px-5 pb-4">
+              <div class="px-4 sm:px-5 pb-4 flex flex-wrap items-center justify-between gap-3">
                 <p class="text-xs uppercase tracking-[0.14em] text-slate-400">${item.fuente}</p>
+                <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#365978]">Ampliar imagen</span>
               </div>
             </div>
             <div class="grid gap-4 md:gap-5">
@@ -1967,6 +2277,12 @@ function checkCaseAnswer(btn, qIdx, aIdx) {
     <div class="mt-4 text-[11px] uppercase tracking-[0.14em] text-slate-500">
       ${caso.fuente}
     </div>
+    ${caso.enlace ? `
+      <a href="${caso.enlace}" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#365978]">
+        <span>Ver caso fuente</span>
+        <span>↗</span>
+      </a>
+    ` : ''}
   `;
   
   feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
