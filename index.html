@@ -315,6 +315,115 @@ const EVALUACION = [
   { m: "14. Integración", q: "Ante un ECG normal con dolor torácico opresivo activo:", a: ["Se descarta infarto", "Se debe seriar ECG y troponinas", "Es dolor osteomuscular"], c: 1, f: "Un ECG normal inicial no descarta isquemia aguda. Hasta un 15% de los infartos presentan un trazado normal en los primeros minutos." }
 ];
 
+const RECURSOS_VISUALES = {
+  s1: {
+    src: '/assent/modules/s1-fundamentos.jpg',
+    alt: 'Esquema bibliográfico de derivaciones frontales y precordiales',
+    titulo: 'Derivaciones y orientación espacial',
+    descripcion: 'Lámina de apoyo para revisar la lógica de las derivaciones, la disposición de electrodos y la lectura espacial básica antes de interpretar ritmos o síndromes.',
+    fuente: 'Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 16'
+  },
+  s2: {
+    src: '/assent/modules/s2-patrones.jpg',
+    alt: 'Página bibliográfica con patrón de preexcitación y onda delta',
+    titulo: 'Patrón reconocible de preexcitación',
+    descripcion: 'Ejemplo visual seleccionado para fijar rasgos de reconocimiento rápido, especialmente la onda delta y el patrón de WPW como imagen-señal clásica.',
+    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 52'
+  },
+  s3: {
+    src: '/assent/modules/s3-normal.jpg',
+    alt: 'Página bibliográfica sobre variantes y hallazgos del electrocardiograma normal',
+    titulo: 'Normalidad y variantes frecuentes',
+    descripcion: 'Resumen útil para distinguir hallazgos fisiológicos, variantes benignas y alteraciones que no deben confundirse con patología mayor en un ECG basal.',
+    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 78'
+  },
+  s4: {
+    src: '/assent/modules/s4-disnea.jpg',
+    alt: 'Página bibliográfica con casos ECG del paciente con disnea y sobrecarga derecha',
+    titulo: 'Disnea y corazón derecho',
+    descripcion: 'Selección centrada en patrones de sobrecarga de cavidades derechas, taquicardia sinusal y signos orientadores de TEP o hipertensión pulmonar.',
+    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 133'
+  },
+  s5: {
+    src: '/assent/modules/s5-isquemia.jpg',
+    alt: 'Esquema bibliográfico de localización del infarto y elevación del ST',
+    titulo: 'Topografía de isquemia e infarto',
+    descripcion: 'Lámina para correlacionar derivaciones, territorios miocárdicos y patrones de elevación del ST en la interpretación del dolor torácico.',
+    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 140'
+  },
+  s6: {
+    src: '/assent/modules/s6-palpitaciones.jpg',
+    alt: 'Algoritmo bibliográfico de aproximación diagnóstica a taquicardias en palpitaciones',
+    titulo: 'Mapa inicial de las taquicardias',
+    descripcion: 'Apoyo visual para ordenar el diagnóstico diferencial de palpitaciones según regularidad, anchura del QRS y contexto clínico.',
+    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 167'
+  },
+  s7: {
+    src: '/assent/modules/s7-sincope.jpg',
+    alt: 'Página bibliográfica de causas cardiogénicas del síncope',
+    titulo: 'Síncope cardiogénico y arritmias',
+    descripcion: 'Referencia práctica para vincular síncope con bradiarritmias, taquiarritmias y causas estructurales con traducción electrocardiográfica.',
+    fuente: 'Conthe y Lobos, El Electrocardiograma, p. 203'
+  },
+  s8: {
+    src: '/assent/modules/s8-conduccion.jpg',
+    alt: 'Página bibliográfica sobre bloqueo de rama derecha y trastornos de conducción',
+    titulo: 'Bloqueos de rama y QRS ancho',
+    descripcion: 'Lámina elegida por su valor docente para reconocer ensanchamiento del QRS y morfologías típicas de los trastornos de conducción intraventricular.',
+    fuente: 'Electrocardiografía básica. Taller ECG de urgencia, p. 14'
+  },
+  s9: {
+    src: '/assent/modules/s9-cavidades.jpg',
+    alt: 'Página bibliográfica de crecimiento auricular y ventricular',
+    titulo: 'Crecimiento auricular y ventricular',
+    descripcion: 'Apoyo visual para repasar criterios morfológicos de crecimiento auricular y signos indirectos de hipertrofia o sobrecarga ventricular.',
+    fuente: 'Electrocardiografía básica. Taller ECG de urgencia, p. 13'
+  },
+  s10: {
+    src: '/assent/modules/s10-repolarizacion.jpg',
+    alt: 'Página bibliográfica sobre cambios del segmento ST y repolarización',
+    titulo: 'Cambios ST-T y lesión miocárdica',
+    descripcion: 'Página útil para fijar el contraste entre descenso y elevación del ST, así como su correlación con isquemia subendocárdica o transmural.',
+    fuente: 'Electrocardiografía básica. Taller ECG de urgencia, p. 11'
+  },
+  s11: {
+    src: '/assent/modules/s11-electrolitos.jpg',
+    alt: 'Página bibliográfica con alteraciones ECG por electrolitos y digital',
+    titulo: 'Electrolitos y trazado',
+    descripcion: 'Selección dedicada a hiperpotasemia, cambios progresivos del trazado y señales que deben hacer pensar en trastorno metabólico urgente.',
+    fuente: 'Electrocardiografía básica. Taller ECG de urgencia, p. 17'
+  },
+  s12: {
+    src: '/assent/modules/s12-farmacos.jpg',
+    alt: 'Caso bibliográfico de toxicidad digitálica con hipopotasemia',
+    titulo: 'Efecto digitálico y toxicidad',
+    descripcion: 'Caso procedente de la bibliografía de problemas ECG para ilustrar cubeta digitálica, extrasistolia ventricular y contexto clínico de toxicidad.',
+    fuente: 'Hampton, 150 Problemas de ECG, p. 278'
+  },
+  s13: {
+    src: '/assent/modules/s13-canalopatias.jpg',
+    alt: 'Caso bibliográfico de síndrome de Brugada',
+    titulo: 'Canalopatías y muerte súbita',
+    descripcion: 'Ejemplo seleccionado por su patrón de Brugada, útil para enlazar canalopatías, riesgo arrítmico y lectura cuidadosa de V1-V2.',
+    fuente: 'Hampton, 150 Problemas de ECG, p. 298'
+  },
+  s14: {
+    src: '/assent/modules/s14-integracion.jpg',
+    alt: 'Esquema bibliográfico de integración clínica en la lectura del ECG',
+    titulo: 'Integración clínica sistemática',
+    descripcion: 'Lámina de cierre para combinar calibración, ritmo, frecuencia y análisis de ondas dentro de una lectura ordenada y clínica del trazado.',
+    fuente: 'Paula Parra, Electrocardiografía ECG/EKG esquemas, p. 40'
+  }
+};
+
+const RECURSO_EVALUACION = {
+  src: '/assent/modules/evaluacion.jpg',
+  alt: 'Caso bibliográfico de resolución de problema ECG para evaluación',
+  titulo: 'Caso-problema para autoevaluación',
+  descripcion: 'Lámina extraída de la bibliografía de entrenamiento por casos para acompañar el bloque de evaluación y mantener el enfoque práctico del taller.',
+  fuente: 'Hampton, 150 Problemas de ECG, p. 114'
+};
+
 function clearActiveNav() {
   $$('[data-session-id]').forEach(btn => btn.classList.remove('nav-active'));
 }
@@ -380,6 +489,31 @@ function renderSidebar() {
   });
 }
 
+function renderFigureCard(figure) {
+  if(!figure) return '';
+
+  return `
+    <figure class="mt-8 md:mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+      <div class="flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 sm:px-5 py-3">
+        <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#355E86]">Lámina Bibliográfica</span>
+        <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">Uso autorizado</span>
+      </div>
+      <div class="p-3 sm:p-4 md:p-5 bg-slate-100">
+        <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+          <img src="${figure.src}" alt="${figure.alt}" loading="lazy" decoding="async" class="w-full h-auto max-h-[70vh] object-contain bg-white">
+        </div>
+      </div>
+      <figcaption class="space-y-3 px-4 sm:px-5 pb-4 sm:pb-5">
+        <div>
+          <h5 class="text-sm sm:text-base font-bold text-[#1F2A36]">${figure.titulo}</h5>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">${figure.descripcion}</p>
+        </div>
+        <p class="text-xs uppercase tracking-[0.14em] text-slate-400">${figure.fuente}</p>
+      </figcaption>
+    </figure>
+  `;
+}
+
 function renderHome() {
   closeMobileSidebar();
   clearActiveNav();
@@ -425,6 +559,7 @@ function renderSession(id) {
   let ses = null;
   BLOQUES.forEach(b => { const f = b.sesiones.find(x => x.id === id); if(f) ses = f; });
   if(!ses) return;
+  const figure = RECURSOS_VISUALES[id];
 
   closeMobileSidebar();
   setActiveNav(id);
@@ -445,14 +580,12 @@ function renderSession(id) {
 
       <div class="grid lg:grid-cols-3 gap-6 md:gap-8 xl:gap-12">
         <div class="lg:col-span-2">
-          <div class="card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl min-h-[320px] md:min-h-[450px]">
+          <div class="card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl min-h-[320px]">
             <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-8 md:mb-12 border-b border-slate-50 pb-5 md:pb-6">Marco de Referencia</h4>
             <div class="text-slate-700 leading-relaxed text-base md:text-lg">
-               <p>Información técnica detallada bajo revisión sistemática para este módulo.</p>
-               <div class="mt-10 md:mt-16 p-6 sm:p-8 md:p-10 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center">
-                  <div class="text-slate-300 text-xs font-mono uppercase tracking-[0.22em] sm:tracking-[0.4em] md:tracking-[0.6em] mb-4 text-center break-words">[ Trazado ECG Módulo ${ses.num} ]</div>
-                  <div class="w-full h-[1px] bg-slate-300"></div>
-               </div>
+               <p>Se ha incorporado una lámina procedente de la bibliografía del proyecto para que cada módulo disponga de un apoyo visual coherente con el contenido clínico que trabaja.</p>
+               <p class="mt-4 text-sm sm:text-base text-slate-500">La imagen inferior resume el foco del módulo y sirve como referencia rápida para la discusión docente, la identificación de patrones y la correlación clínica.</p>
+               ${renderFigureCard(figure)}
             </div>
           </div>
         </div>
@@ -483,6 +616,12 @@ function renderEvaluation() {
       <div class="bg-[#1F2A36] text-white p-6 sm:p-8 md:p-12 xl:p-16 rounded-2xl shadow-tool">
         <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter mb-4 italic">Módulo de Evaluación</h2>
         <p class="text-slate-400 text-xs sm:text-sm uppercase tracking-widest italic font-medium">Validación de competencias del programa (14 cuestiones)</p>
+      </div>
+
+      <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
+        <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Caso de Apoyo</h4>
+        <p class="text-slate-700 leading-relaxed text-sm sm:text-base">La evaluación queda acompañada por una lámina de entrenamiento extraída de la bibliografía de casos ECG, manteniendo el mismo enfoque práctico del resto del microtaller.</p>
+        ${renderFigureCard(RECURSO_EVALUACION)}
       </div>
       
       <div class="space-y-6 sm:space-y-8 md:space-y-12">
