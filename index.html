@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microtaller ECG</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    :root {
+      --color-titulo: #355E86;
+      --color-texto-principal: #1F2A36;
+      --color-texto-secundario: #5B6670;
+      --color-fondo: #F3F4F4;
+      --color-caja-azul: #8FB5D3;
+      --color-caja-suave: #DCEAF4;
+      --color-caja-neutra: #EEE8D8;
+      --color-alerta: #E67F61;
+      --color-resalte: #C24F45;
+      --color-detalle: #C8A22A;
+      /* Sombras profundas (incrementadas para mayor profundidad visual) */
+      --shadow-tool: 0 14px 35px -5px rgba(0, 0, 0, 0.22), 0 12px 18px -8px rgba(0, 0, 0, 0.18);
+      --shadow-active: 0 28px 45px -12px rgba(31, 42, 54, 0.35);
+    }
+
+    html, body {
+      max-width: 100%;
+    }
+
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background-color: var(--color-fondo); 
+      color: var(--color-texto-principal);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(31, 42, 54, 0.3); border-radius: 10px; }
+
+    /* Estética Liquid-Glass Sutil */
+    .glass-surface {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .card-pro {
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--shadow-tool);
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-pro:hover { 
+      transform: translateY(-4px); 
+      box-shadow: var(--shadow-active);
+      border-color: var(--color-caja-azul);
+    }
+
+    /* Firma Editorial Discreta */
+    .editorial-signature {
+      position: fixed;
+      bottom: 1.2rem;
+      right: 1.2rem;
+      width: 65px;
+      height: auto;
+      z-index: 9999;
+      opacity: 0.4;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+      transition: opacity 0.4s ease;
+    }
+
+    .nav-active { 
+      background: linear-gradient(135deg, white 0%, #eef7ff 100%) !important;
+      color: var(--color-titulo) !important;
+      font-weight: 700;
+      box-shadow: inset 4px 0 0 var(--color-titulo), var(--shadow-tool);
+    }
+
+    .bloque-header {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--color-titulo);
+      letter-spacing: 0.1em;
+      padding: 1.8rem 1.5rem 0.6rem;
+      text-transform: uppercase;
+      opacity: 0.9;
+      border-bottom: 1px solid rgba(53, 94, 134, 0.1);
+      margin-bottom: 0.5rem;
+    }
+
+    .bib-btn-circle {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.2px solid var(--color-detalle);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 900;
+      color: var(--color-detalle);
+    }
+
+    .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Cuadrícula sutil decorativa */
+    .ecg-grid-pattern {
+      background-image: 
+        linear-gradient(rgba(200, 162, 42, 0.05) 1px, transparent 1px), 
+        linear-gradient(90deg, rgba(200, 162, 42, 0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+
+    .feedback-box {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      display: none;
+      border-left-width: 4px;
+    }
+
+    .btn-eval {
+      background: linear-gradient(135deg, var(--color-resalte) 0%, #8b251d 100%);
+      transition: all 0.3s ease;
+    }
+    .btn-eval:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 10px 20px -5px rgba(194, 79, 69, 0.4);
+    }
+
+    .mobile-sidebar {
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .mobile-sidebar.is-open {
+      transform: translateX(0);
+    }
+
+    .mobile-overlay.is-open {
+      display: block;
+    }
+
+    @media (max-width: 1023px) {
+      .editorial-signature {
+        width: 46px;
+        bottom: 0.8rem;
+        right: 0.8rem;
+        opacity: 0.22;
+      }
+
+      .bloque-header {
+        padding: 1.2rem 1.1rem 0.5rem;
+      }
+
+      .card-pro:hover {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .editorial-signature {
+        display: none;
+      }
+
+      .ecg-grid-pattern {
+        background-size: 22px 22px;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+
+<!-- Firma Editorial Permanente -->
+<img src="/assent/image/firma.png" alt="Firma Autor" class="editorial-signature" onerror="this.style.display='none'">
+
+<!-- CABECERA PROFESIONAL -->
+<header class="min-h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-3 px-4 sm:px-5 lg:px-6 py-3 shrink-0 z-50 shadow-sm flex-wrap lg:flex-nowrap">
+  <div class="flex items-center min-w-0">
+    <button onclick="toggleMobileSidebar()" class="lg:hidden mr-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:text-[#355E86] hover:border-[#355E86]/30 transition-colors" aria-label="Abrir navegación">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+    </button>
+    <div class="w-12 h-12 flex items-center justify-center shrink-0">
+      <img src="/assent/image/logo.png" alt="Microtaller ECG" class="max-h-full max-w-full object-contain cursor-pointer" onclick="renderHome()" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23355E86\'/%3E%3Cpath d=\'M10 50 L30 50 L40 20 L60 80 L70 50 L90 50\' fill=\'none\' stroke=\'white\' stroke-width=\'5\'/%3E%3C/svg%3E'">
+    </div>
+    <div class="ml-3 sm:ml-4 border-l pl-3 sm:pl-4 border-slate-200 hidden md:block min-w-0">
+      <span class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest">Plataforma Académica de Decisión Clínica</span>
+    </div>
+  </div>
+  
+  <div class="flex items-center justify-end gap-2 sm:gap-3 lg:gap-6 w-full sm:w-auto min-w-0">
+    <button onclick="toggleGlosario()" class="text-[9px] sm:text-[10px] font-extrabold text-slate-400 hover:text-black uppercase tracking-[0.18em] transition-all whitespace-nowrap">Protocolo Seguridad</button>
+    <button onclick="renderHome()" class="bg-[#355E86] text-white px-4 sm:px-5 lg:px-6 py-2 rounded-xl shadow-tool text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] hover:bg-[#1F2A36] transition-all whitespace-nowrap">Panel Inicio</button>
+  </div>
+</header>
+
+<div id="mobileSidebarOverlay" class="mobile-overlay fixed inset-0 z-40 hidden bg-[#1F2A36]/45 backdrop-blur-[2px] lg:hidden" onclick="closeMobileSidebar()"></div>
+
+<aside id="mobileSidebar" class="mobile-sidebar fixed inset-y-0 left-0 z-50 flex w-[min(88vw,20rem)] -translate-x-full flex-col border-r border-slate-200 bg-slate-50 shadow-2xl lg:hidden">
+  <div class="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-4">
+    <div>
+      <div class="text-[10px] font-black uppercase tracking-[0.22em] text-[#355E86]">Navegación</div>
+      <div class="mt-1 text-xs text-slate-500">Microtaller ECG</div>
+    </div>
+    <button onclick="closeMobileSidebar()" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:text-[#355E86] hover:border-[#355E86]/30 transition-colors" aria-label="Cerrar navegación">×</button>
+  </div>
+  <nav id="mobileSidebarNav" class="flex-1 overflow-y-auto py-2"></nav>
+  <div class="border-t border-slate-200 bg-white/70 p-4">
+    <button onclick="renderEvaluation()" class="w-full btn-eval text-white py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-tool">
+      Módulo de Evaluación
+    </button>
+  </div>
+</aside>
+
+<div class="flex flex-1 min-h-0 overflow-hidden">
+  <!-- SIDEBAR -->
+  <aside class="hidden lg:flex lg:w-64 xl:w-72 bg-slate-50 border-r border-slate-200 flex-col shrink-0 overflow-y-auto">
+    <nav id="sidebarNav" class="flex-1 py-4"></nav>
+    <div class="p-6 border-t border-slate-200 bg-white/50">
+      <button onclick="renderEvaluation()" class="w-full btn-eval text-white py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-tool">
+        Módulo de Evaluación
+      </button>
+    </div>
+  </aside>
+
+  <!-- ÁREA DE CONTENIDO -->
+  <main id="mainContent" class="flex-1 min-w-0 overflow-y-auto overflow-x-hidden ecg-grid-pattern bg-[#F3F4F4] p-4 sm:p-6 md:p-8 xl:p-12 relative">
+    <!-- Inyectado por JS -->
+  </main>
+</div>
+
+<!-- MODALES -->
+<div id="glosarioModal" class="fixed inset-0 bg-[#1F2A36]/50 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-hidden shadow-2xl">
+    <div class="p-5 sm:p-6 md:p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50 gap-4">
+      <h2 class="font-bold text-[#1F2A36] uppercase tracking-widest text-[11px]">Seguridad Clínica</h2>
+      <button onclick="toggleGlosario()" class="text-slate-300 text-3xl hover:text-slate-500 transition-colors">×</button>
+    </div>
+    <div class="p-5 sm:p-6 md:p-10 space-y-4 sm:space-y-6 overflow-y-auto">
+      <div class="p-4 sm:p-5 md:p-6 bg-[#DCEAF4] rounded-xl border-l-4 border-[#355E86] shadow-md">
+        <b class="text-[#355E86] text-[10px] uppercase tracking-wide">ECG Normal</b>
+        <p class="text-xs text-slate-700 mt-2 leading-relaxed">No explica la clínica ni implica riesgo vital inmediato. No obliga a monitorización ni derivación urgente.</p>
+      </div>
+      <div class="p-4 sm:p-5 md:p-6 bg-[#E67F61]/10 rounded-xl border-l-4 border-[#E67F61] shadow-md">
+        <b class="text-[#E67F61] text-[10px] uppercase tracking-wide">Riesgo Vital</b>
+        <p class="text-xs font-bold text-[#1F2A36] mt-2 leading-relaxed">Obliga a monitorización continua y actuación médica inmediata para estabilización hemodinámica.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const $ = (id) => document.getElementById(id);
+const $$ = (sel, context = document) => Array.from(context.querySelectorAll(sel));
+
+const BLOQUES = [
+  {
+    titulo: "BLOQUE 1 · BASES",
+    sesiones: [
+      { id: 's1', num: 1, title: 'Fundamentos básicos', subtitle: 'Actividad eléctrica y técnica de registro' },
+      { id: 's2', num: 2, title: 'Imágenes características', subtitle: 'Patrones ECG frecuentes y visuales' },
+      { id: 's3', num: 3, title: 'El electrocardiograma normal', subtitle: 'Variantes y criterios de normalidad' }
+    ]
+  },
+  {
+    titulo: "BLOQUE 2 · SÍNDROMES",
+    sesiones: [
+      { id: 's4', num: 4, title: 'Paciente con disnea', subtitle: 'Insuficiencia cardíaca y sobrecarga derecha' },
+      { id: 's5', num: 5, title: 'Dolor torácico / Isquemia', subtitle: 'Isquemia de bajo riesgo y dolor estable' },
+      { id: 's6', num: 6, title: 'Paciente con palpitaciones', subtitle: 'Arritmias supraventriculares y ventriculares' },
+      { id: 's7', num: 7, title: 'Paciente con síncope', subtitle: 'Bloqueos y causas arrítmicas del síncope' }
+    ]
+  },
+  {
+    titulo: "BLOQUE 3 · ALTERACIONES",
+    sesiones: [
+      { id: 's8', num: 8, title: 'Trastornos de conducción', subtitle: 'Bloqueos AV y bloqueos de rama' },
+      { id: 's9', num: 9, title: 'Crecimiento de cavidades', subtitle: 'Hipertrofias auriculares y ventriculares' },
+      { id: 's10', num: 10, title: 'Repolarización', subtitle: 'Cambios ST-T isquémicos y secundarios' },
+      { id: 's11', num: 11, title: 'Electrolitos', subtitle: 'Alteraciones del K, Ca y Mg en el ECG' },
+      { id: 's12', num: 12, title: 'Fármacos y tóxicos', subtitle: 'Efecto de la digoxina y fármacos QT' },
+      { id: 's13', num: 13, title: 'Síndromes eléctricos', subtitle: 'Canalopatías, Brugada y QT largo/corto' }
+    ]
+  },
+  {
+    titulo: "BLOQUE 4 · INTEGRACIÓN",
+    sesiones: [
+      { id: 's14', num: 14, title: 'Correlación clínica', subtitle: 'Integración diagnóstica y decisión clínica' }
+    ]
+  }
+];
+
+const EVALUACION = [
+  { m: "1. Bases", q: "¿Cuál es la velocidad de registro estándar del papel de ECG?", a: ["10 mm/seg", "25 mm/seg", "50 mm/seg"], c: 1, f: "La velocidad estándar es 25 mm/s; esto permite que 1 mm horizontal equivalga a 0.04 segundos, base necesaria para medir intervalos como el PR o el QRS." },
+  { m: "2. Patrones", q: "¿Qué hallazgo es patognomónico de la preexcitación (WPW)?", a: ["Onda delta", "P picuda", "Onda U"], c: 0, f: "La onda delta refleja la activación ventricular prematura a través de una vía accesoria, produciendo un empastamiento inicial del QRS y un intervalo PR corto." },
+  { m: "3. Normalidad", q: "¿Cuál es el rango normal del eje eléctrico en un adulto?", a: ["-30º a +90º", "-90º a 0º", "+90º a +180º"], c: 0, f: "El eje normal se sitúa entre -30º y +90º. Desviaciones fuera de este rango sugieren bloqueos fasciculares, hipertrofias o desplazamientos anatómicos." },
+  { m: "4. Disnea", q: "¿Qué signo sugiere sobrecarga aguda del ventrículo derecho?", a: ["Sokolow > 35mm", "Onda R prominente en V1", "BRIHH"], c: 1, f: "En la sobrecarga derecha (como en el TEP), el ventrículo derecho aumenta su voltaje, produciendo ondas R altas en las precordiales derechas (V1-V2)." },
+  { m: "5. Isquemia", q: "Un descenso horizontal del ST de 2mm en V4-V6 sugiere:", a: ["Lesión subepicárdica", "Isquemia subendocárdica", "Variante normal"], c: 1, f: "El descenso del segmento ST (lesión subendocárdica) es un signo de isquemia miocárdica activa que requiere seriación enzimática y clínica inmediata." },
+  { m: "6. Arritmias", q: "La ausencia de onda P y un intervalo RR irregular definen:", a: ["Flutter auricular", "Fibrilación auricular", "Taquicardia sinusal"], c: 1, f: "La fibrilación auricular se caracteriza por una actividad auricular caótica (sin ondas P organizadas) y una respuesta ventricular irregular." },
+  { m: "7. Síncope", q: "El fenómeno de Wenckebach es propio del:", a: ["Bloqueo AV Grado I", "Bloqueo AV Grado II Mobitz I", "Bloqueo AV Completo"], c: 1, f: "En el Mobitz I, el intervalo PR se prolonga progresivamente hasta que una onda P no conduce, reflejando fatiga en el nodo AV." },
+  { m: "8. Conducción", q: "¿Qué morfología de QRS define al bloqueo de rama izquierda (BRI)?", a: ["rsR' en V1", "R ancha y mellada en V6 (monofásica)", "S profunda en V6"], c: 1, f: "El BRI produce una despolarización septal anómala, resultando en ondas R altas y melladas en las derivaciones laterales (V5, V6, I, aVL)." },
+  { m: "9. Cavidades", q: "¿Cuál es el criterio de Sokolow-Lyon para hipertrofia de VI?", a: ["S en V1 + R en V5/V6 > 35mm", "R en aVL > 11mm", "Eje a -45º"], c: 0, f: "El criterio de Sokolow-Lyon suma la profundidad de la S en V1 y la altura de la R en V5 o V6. Un valor mayor de 35mm es altamente indicativo de HVI." },
+  { m: "10. ST-T", q: "Una onda T invertida y simétrica en precordiales sugiere:", a: ["Hiperpotasemia", "Isquemia miocárdica", "Efecto vagal"], c: 1, f: "La simetría en la inversión de la onda T es un signo clásico de isquemia miocárdica primaria, a diferencia de las asimetrías por sobrecarga." },
+  { m: "11. Electrolitos", q: "¿Cuál es el signo ECG más temprano de la hiperpotasemia?", a: ["Ondas T picudas y estrechas", "Ensanchamiento del QRS", "Pausas sinusales"], c: 0, f: "Las ondas T picudas ('en tienda de campaña') son el primer signo de toxicidad por potasio. Ignorar este signo puede llevar a una parada sinusoidal o FV." },
+  { m: "12. Fármacos", q: "¿Qué efecto produce la digoxina en el segmento ST?", a: ["Elevación convexa", "Descenso cóncavo (cubeta)", "Prolongación del QT"], c: 1, f: "La digoxina produce un descenso del ST en forma de cuchara o cubeta digitálica, que indica impregnación terapéutica, no necesariamente toxicidad." },
+  { m: "13. Canalopatías", q: "El patrón tipo 1 de Brugada presenta elevación del ST en:", a: ["V1-V2 en silla de montar", "V1-V2 en aleta de tiburón (coved)", "Cara inferior"], c: 1, f: "El patrón diagnóstico de Brugada es la elevación del ST cóncava (en aleta de tiburón) seguida de una onda T negativa en las derivaciones derechas." },
+  { m: "14. Integración", q: "Ante un ECG normal con dolor torácico opresivo activo:", a: ["Se descarta infarto", "Se debe seriar ECG y troponinas", "Es dolor osteomuscular"], c: 1, f: "Un ECG normal inicial no descarta isquemia aguda. Hasta un 15% de los infartos presentan un trazado normal en los primeros minutos." }
+];
+
+function clearActiveNav() {
+  $$('[data-session-id]').forEach(btn => btn.classList.remove('nav-active'));
+}
+
+function setActiveNav(sessionId) {
+  clearActiveNav();
+  $$(`[data-session-id="${sessionId}"]`).forEach(btn => btn.classList.add('nav-active'));
+}
+
+function openMobileSidebar() {
+  const sidebar = $('mobileSidebar');
+  const overlay = $('mobileSidebarOverlay');
+  if(!sidebar || !overlay) return;
+  sidebar.classList.add('is-open');
+  sidebar.classList.remove('-translate-x-full');
+  overlay.classList.add('is-open');
+  overlay.classList.remove('hidden');
+  document.body.classList.add('overflow-hidden');
+}
+
+function closeMobileSidebar() {
+  const sidebar = $('mobileSidebar');
+  const overlay = $('mobileSidebarOverlay');
+  if(!sidebar || !overlay) return;
+  sidebar.classList.remove('is-open');
+  sidebar.classList.add('-translate-x-full');
+  overlay.classList.remove('is-open');
+  overlay.classList.add('hidden');
+  document.body.classList.remove('overflow-hidden');
+}
+
+function toggleMobileSidebar() {
+  const sidebar = $('mobileSidebar');
+  if(!sidebar) return;
+  if(sidebar.classList.contains('is-open')) {
+    closeMobileSidebar();
+    return;
+  }
+  openMobileSidebar();
+}
+
+function renderSidebar() {
+  ['sidebarNav', 'mobileSidebarNav'].forEach(navId => {
+    const nav = $(navId);
+    if(!nav) return;
+
+    nav.innerHTML = '';
+    BLOQUES.forEach(b => {
+      const label = document.createElement('div');
+      label.className = 'bloque-header';
+      label.textContent = b.titulo;
+      nav.appendChild(label);
+
+      b.sesiones.forEach(s => {
+        const btn = document.createElement('button');
+        btn.dataset.sessionId = s.id;
+        btn.className = 'w-full text-left px-4 sm:px-5 lg:px-6 py-3 text-[12px] sm:text-[12.5px] flex items-center gap-3 hover:bg-white transition-all text-slate-500 border-b border-slate-50/50';
+        btn.onclick = () => renderSession(s.id);
+        btn.innerHTML = `<span class="w-5 h-5 flex items-center justify-center border border-slate-300 text-[9px] font-black rounded-md shrink-0 bg-white/40">${s.num}</span><span class="truncate font-medium">${s.title}</span>`;
+        nav.appendChild(btn);
+      });
+    });
+  });
+}
+
+function renderHome() {
+  closeMobileSidebar();
+  clearActiveNav();
+  
+  const main = $('mainContent');
+  main.innerHTML = `
+    <div class="max-w-6xl mx-auto fade-in space-y-8 md:space-y-12 pb-16 md:pb-24">
+      <div class="card-pro p-6 sm:p-8 md:p-12 xl:p-20 rounded-2xl relative overflow-hidden bg-white">
+        <div class="absolute -right-16 -top-16 sm:-right-20 sm:-top-20 w-48 h-48 sm:w-72 sm:h-72 md:w-96 md:h-96 bg-[#355E86]/10 rounded-full blur-[90px] md:blur-[140px]"></div>
+        <div class="relative z-10">
+          <h2 class="text-4xl sm:text-5xl md:text-7xl xl:text-8xl font-black text-[#1F2A36] tracking-tighter leading-none mb-6 md:mb-8 italic break-words">Microtaller<br><span class="text-[#355E86]">ECG</span></h2>
+          <p class="text-base sm:text-lg md:text-xl text-slate-500 font-light max-w-2xl leading-relaxed italic">Guía cerrada de adiestramiento técnico para residentes orientada exclusivamente a la toma de decisiones clínicas.</p>
+          <div class="mt-8 md:mt-12 flex flex-wrap gap-3 sm:gap-4 md:gap-6">
+             <div class="bg-white border-2 border-slate-100 text-slate-400 px-4 sm:px-6 md:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-md">14 Unidades Docentes</div>
+             <div class="bg-white border-2 border-[#C8A22A]/40 text-[#C8A22A] px-4 sm:px-6 md:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-md">Evidencia Médica</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6 md:gap-8 lg:gap-10">
+        ${BLOQUES.flatMap(b => b.sesiones).map(s => `
+          <div onclick="renderSession('${s.id}')" class="group card-pro p-6 sm:p-7 md:p-8 rounded-2xl cursor-pointer flex flex-col justify-between min-h-[170px] md:min-h-[190px]">
+            <div>
+              <div class="flex justify-between items-start gap-4 mb-5 sm:mb-6">
+                <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Unidad ${s.num}</span>
+                <span class="bib-btn-circle">B</span>
+              </div>
+              <h3 class="text-xl sm:text-2xl font-bold text-[#1F2A36] group-hover:text-[#355E86] transition-colors leading-tight mb-2 break-words">${s.title}</h3>
+              <p class="text-[12px] text-slate-400 font-medium leading-relaxed">${s.subtitle}</p>
+            </div>
+            <div class="mt-6 sm:mt-8 pt-4 border-t border-slate-50 flex items-center text-[10px] sm:text-[11px] font-black text-[#C24F45] uppercase tracking-[0.1em]">
+              Explorar Contenido <span class="ml-2 group-hover:translate-x-2 transition-transform">→</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  main.scrollTo(0,0);
+}
+
+function renderSession(id) {
+  let ses = null;
+  BLOQUES.forEach(b => { const f = b.sesiones.find(x => x.id === id); if(f) ses = f; });
+  if(!ses) return;
+
+  closeMobileSidebar();
+  setActiveNav(id);
+
+  $('mainContent').innerHTML = `
+    <div class="max-w-6xl mx-auto fade-in space-y-8 md:space-y-12 pb-16 md:pb-24 text-[#1F2A36]">
+      <div class="bg-[#1F2A36] text-white p-6 sm:p-8 md:p-12 xl:p-16 rounded-2xl shadow-tool relative overflow-hidden">
+        <div class="absolute right-0 bottom-0 p-4 sm:p-6 md:p-8 opacity-10 text-[120px] sm:text-[180px] lg:text-[280px] font-black leading-none translate-y-10 sm:translate-y-16 lg:translate-y-24 select-none pointer-events-none">${ses.num}</div>
+        <div class="relative z-10">
+          <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-6 md:mb-10">
+            <span class="text-[10px] font-bold bg-white/20 px-4 sm:px-6 py-2 rounded-full uppercase tracking-[0.2em] border border-white/5 shadow-sm">Protocolo Académico</span>
+            <span class="bib-btn-circle border-white/40 text-white/50">B</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-black tracking-tighter leading-tight mb-3 md:mb-4 break-words">${ses.title}</h2>
+          <p class="text-slate-400 text-base sm:text-lg md:text-xl font-light italic opacity-90">${ses.subtitle}</p>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-6 md:gap-8 xl:gap-12">
+        <div class="lg:col-span-2">
+          <div class="card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl min-h-[320px] md:min-h-[450px]">
+            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-8 md:mb-12 border-b border-slate-50 pb-5 md:pb-6">Marco de Referencia</h4>
+            <div class="text-slate-700 leading-relaxed text-base md:text-lg">
+               <p>Información técnica detallada bajo revisión sistemática para este módulo.</p>
+               <div class="mt-10 md:mt-16 p-6 sm:p-8 md:p-10 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center">
+                  <div class="text-slate-300 text-xs font-mono uppercase tracking-[0.22em] sm:tracking-[0.4em] md:tracking-[0.6em] mb-4 text-center break-words">[ Trazado ECG Módulo ${ses.num} ]</div>
+                  <div class="w-full h-[1px] bg-slate-300"></div>
+               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-6 md:space-y-8">
+          <div class="bg-[#EEE8D8] p-6 sm:p-8 md:p-10 rounded-2xl shadow-tool border border-[#C8A22A]/10">
+            <h4 class="text-[11px] font-bold text-[#355E86] uppercase tracking-widest mb-6 flex items-center gap-3">
+              <div class="w-2.5 h-2.5 bg-[#E67F61] rounded-full"></div> Concepto Clínico
+            </h4>
+            <p class="text-base sm:text-[17px] font-extrabold text-[#1F2A36] leading-relaxed italic">"No trate trazados, trate pacientes. El ECG es un complemento del juicio clínico médico."</p>
+          </div>
+          <button onclick="toggleGlosario()" class="w-full bg-white p-5 sm:p-6 md:p-8 rounded-2xl text-[#C24F45] text-[10px] sm:text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-between gap-4 shadow-tool group">
+            <span class="break-words text-left">Protocolo Seguridad</span><span class="text-2xl sm:text-3xl group-hover:rotate-12 transition-transform shrink-0">⚠</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  $('mainContent').scrollTo(0,0);
+}
+
+function renderEvaluation() {
+  closeMobileSidebar();
+  clearActiveNav();
+  const main = $('mainContent');
+  main.innerHTML = `
+    <div class="max-w-4xl mx-auto fade-in space-y-8 md:space-y-12 pb-16 md:pb-24">
+      <div class="bg-[#1F2A36] text-white p-6 sm:p-8 md:p-12 xl:p-16 rounded-2xl shadow-tool">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter mb-4 italic">Módulo de Evaluación</h2>
+        <p class="text-slate-400 text-xs sm:text-sm uppercase tracking-widest italic font-medium">Validación de competencias del programa (14 cuestiones)</p>
+      </div>
+      
+      <div class="space-y-6 sm:space-y-8 md:space-y-12">
+        ${EVALUACION.map((item, idx) => `
+          <div class="card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl bg-white" id="q-container-${idx}">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-10">
+              <span class="bg-[#DCEAF4] text-[#355E86] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest border border-[#355E86]/10">${item.m}</span>
+              <span class="text-slate-300 text-xs font-mono font-bold tracking-widest">PROGRESO ${Math.round((idx+1)/14*100)}%</span>
+            </div>
+            <p class="text-xl sm:text-2xl font-bold mb-6 md:mb-10 text-[#1F2A36] leading-tight break-words">${item.q}</p>
+            <div class="grid gap-4 md:gap-5">
+              ${item.a.map((ans, aIdx) => `
+                <button onclick="checkAnswer(this, ${idx}, ${aIdx}, ${item.c})" class="option-btn w-full text-left p-4 sm:p-5 md:p-6 rounded-xl border-2 border-slate-100 bg-slate-50 hover:bg-[#DCEAF4] hover:border-slate-200 transition-all text-sm font-semibold text-slate-700 break-words">
+                  ${ans}
+                </button>
+              `).join('')}
+            </div>
+            <div id="feedback-${idx}" class="feedback-box">
+               <div class="flex items-center gap-2 mb-3">
+                 <span id="feedback-badge-${idx}" class="text-[10px] font-black uppercase px-2 py-0.5 rounded"></span>
+               </div>
+               <div class="text-slate-800 font-medium leading-relaxed italic">
+                 <strong>Justificación Técnica:</strong> ${item.f}
+               </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="pt-8 md:pt-12 flex flex-col items-center gap-4 md:gap-6">
+         <div class="h-[1px] w-24 bg-slate-200"></div>
+         <button onclick="$('mainContent').scrollTo({top:0, behavior:'smooth'})" class="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.2em] hover:text-[#355E86] transition-colors">Finalizar y volver arriba</button>
+      </div>
+    </div>
+  `;
+  main.scrollTo(0,0);
+}
+
+function checkAnswer(btn, qIdx, aIdx, correctIdx) {
+  const container = $(`q-container-${qIdx}`);
+  const feedback = $(`feedback-${qIdx}`);
+  const badge = $(`feedback-badge-${qIdx}`);
+  const options = $$('.option-btn', container);
+  
+  options.forEach(b => {
+    b.disabled = true;
+    b.classList.add('opacity-50', 'cursor-not-allowed');
+  });
+  
+  btn.classList.remove('opacity-50');
+  
+  if(aIdx === correctIdx) {
+    btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800', '!opacity-100');
+    feedback.classList.add('bg-green-50', 'border-green-300', 'text-green-900', 'block');
+    badge.textContent = "Respuesta Correcta";
+    badge.classList.add('bg-green-500', 'text-white');
+  } else {
+    btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800', '!opacity-100');
+    options[correctIdx].classList.add('bg-green-50', 'border-green-300', 'text-green-700', '!opacity-100', 'opacity-100');
+    feedback.classList.add('bg-red-50', 'border-red-300', 'text-red-900', 'block');
+    badge.textContent = "Respuesta Incorrecta";
+    badge.classList.add('bg-red-500', 'text-white');
+  }
+  
+  feedback.classList.add('fade-in');
+}
+
+function toggleGlosario() { 
+  $('glosarioModal').classList.toggle('hidden'); 
+}
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', () => {
+  renderSidebar();
+  renderHome();
+});
+
+window.addEventListener('resize', () => {
+  if(window.innerWidth >= 1024) closeMobileSidebar();
+});
+
+document.addEventListener('keydown', (event) => {
+  if(event.key !== 'Escape') return;
+  closeMobileSidebar();
+  $('glosarioModal').classList.add('hidden');
+});
+</script>
+</body>
+</html>
