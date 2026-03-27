@@ -1,0 +1,25 @@
+{
+  "name": "Microtaller ECG",
+  "short_name": "ECG",
+  "description": "Microtaller docente de electrocardiografía con atlas por módulos, casos clínicos y evaluación comentada.",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#edf2f8",
+  "theme_color": "#edf2f8",
+  "icons": [
+    {
+      "src": "./assent/image/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assent/image/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

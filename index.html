@@ -4,6 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Microtaller ECG</title>
+  <meta name="theme-color" content="#edf2f8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Microtaller ECG">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="assent/image/pwa-icon-192.png">
+  <link rel="apple-touch-icon" href="assent/image/pwa-icon-180.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="assent/atlas/atlas-data.js"></script>
   <style>
@@ -168,15 +175,32 @@
     /* Firma Editorial Discreta */
     .editorial-signature {
       position: fixed;
-      bottom: 1rem;
-      left: 1rem;
-      width: 56px;
+      bottom: calc(0.72rem + env(safe-area-inset-bottom, 0px));
+      left: calc(0.72rem + env(safe-area-inset-left, 0px));
+      width: 44px;
       height: auto;
-      z-index: 9999;
-      opacity: 0.16;
+      z-index: 30;
+      opacity: 0.13;
       pointer-events: none;
       mix-blend-mode: multiply;
-      transition: opacity 0.4s ease;
+      filter: saturate(0.9);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .accordion-trigger {
+      transition: background-color 0.25s ease;
+    }
+
+    .accordion-trigger:hover {
+      background: rgba(255, 255, 255, 0.32);
+    }
+
+    .accordion-chevron {
+      transition: transform 0.25s ease, color 0.25s ease;
+    }
+
+    .accordion-trigger[aria-expanded="true"] .accordion-chevron {
+      transform: rotate(180deg);
     }
 
     .nav-active { 
@@ -251,10 +275,10 @@
 
     @media (max-width: 1023px) {
       .editorial-signature {
-        width: 40px;
-        bottom: 0.8rem;
-        left: 0.8rem;
-        opacity: 0.14;
+        width: 34px;
+        bottom: calc(0.62rem + env(safe-area-inset-bottom, 0px));
+        left: calc(0.62rem + env(safe-area-inset-left, 0px));
+        opacity: 0.11;
       }
 
       .bloque-header {
@@ -268,7 +292,8 @@
 
     @media (max-width: 767px) {
       .editorial-signature {
-        display: none;
+        width: 28px;
+        opacity: 0.1;
       }
 
       .ecg-grid-pattern {
@@ -334,7 +359,7 @@
   </aside>
 
   <!-- ÁREA DE CONTENIDO -->
-  <main id="mainContent" class="main-shell flex-1 min-w-0 overflow-y-auto overflow-x-hidden ecg-grid-pattern p-4 sm:p-6 md:p-8 xl:p-10 2xl:p-12 relative">
+  <main id="mainContent" class="main-shell flex-1 min-w-0 overflow-y-auto overflow-x-hidden ecg-grid-pattern p-3 sm:p-5 md:p-8 xl:p-10 2xl:p-12 relative">
     <!-- Inyectado por JS -->
   </main>
 </div>
@@ -1829,13 +1854,56 @@ function renderStepList(items) {
   `;
 }
 
+function renderAccordionCard({ id, title, badge = '', intro = '', body = '', tone = 'blue', mobileOpen = false }) {
+  const badgePalette = tone === 'alert'
+    ? 'border-[#cb6b56]/15 bg-[#cb6b56]/8 text-[#cb6b56]'
+    : tone === 'gold'
+      ? 'border-[#9e8450]/18 bg-[#9e8450]/10 text-[#9e8450]'
+      : 'border-[#365978]/12 bg-[#365978]/8 text-[#365978]';
+
+  return `
+    <section class="card-pro overflow-hidden">
+      <button
+        type="button"
+        class="accordion-trigger flex w-full items-center justify-between gap-4 px-5 py-4 text-left sm:px-6 sm:py-5 md:px-7 md:py-6"
+        aria-expanded="${mobileOpen ? 'true' : 'false'}"
+        aria-controls="${id}"
+        onclick="toggleAccordion(this)"
+      >
+        <div class="min-w-0">
+          <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">${title}</h3>
+          ${intro ? `<p class="mt-2 text-sm leading-relaxed text-slate-500">${intro}</p>` : ''}
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+          ${badge ? `<span class="rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] ${badgePalette}">${badge}</span>` : ''}
+          <span class="accordion-chevron inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 lg:hidden" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+        </div>
+      </button>
+      <div id="${id}" class="${mobileOpen ? 'block' : 'hidden lg:block'} border-t border-slate-100 px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6 md:px-7 md:pb-7 md:pt-6">
+        ${body}
+      </div>
+    </section>
+  `;
+}
+
+function toggleAccordion(button) {
+  if(window.innerWidth >= 1024 || !button) return;
+  const targetId = button.getAttribute('aria-controls');
+  const panel = targetId ? $(targetId) : null;
+  if(!panel) return;
+  const isExpanded = button.getAttribute('aria-expanded') === 'true';
+  button.setAttribute('aria-expanded', String(!isExpanded));
+  panel.classList.toggle('hidden', isExpanded);
+}
+
 function renderGallery(gallery, contenido, apoyo) {
   return `
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      ${gallery.map((item, idx) => {
-        const focus = (contenido?.puntosClave || [])[idx % Math.max((contenido?.puntosClave || []).length, 1)] || '';
-        const trap = (contenido?.errores || [])[idx % Math.max((contenido?.errores || []).length, 1)] || '';
-        const application = (apoyo?.ruta || [])[idx % Math.max((apoyo?.ruta || []).length, 1)] || contenido?.perla || '';
+      ${gallery.map((item) => {
         return `
         <figure class="gallery-card">
           <button
@@ -1846,10 +1914,10 @@ function renderGallery(gallery, contenido, apoyo) {
             data-title="${escapeAttr(item.titulo)}"
             data-source="${escapeAttr(item.fuente)}"
             data-kicker="Atlas ECG"
-            data-description="${escapeAttr(item.descripcion || contenido?.resumen || '')}"
-            data-focus="${escapeAttr(focus)}"
-            data-trap="${escapeAttr(trap)}"
-            data-application="${escapeAttr(application)}"
+            data-description="${escapeAttr(item.descripcion || '')}"
+            data-focus="${escapeAttr(item.foco || '')}"
+            data-trap="${escapeAttr(item.trampa || '')}"
+            data-application="${escapeAttr(item.aplicacion || '')}"
             onclick="openFigure(this)"
           >
             <img src="${item.src}" alt="${item.alt}" loading="eager" decoding="async">
@@ -2037,6 +2105,7 @@ function renderSession(id) {
   const contenido = MODULOS_CONTENIDO[id];
   const apoyo = MODULOS_APOYO[id] || { ruta: [], alertas: [] };
   const atlasCount = (contenido.galeria || []).length;
+  const panelPrefix = `panel-${id}`;
 
   closeMobileSidebar();
   setActiveNav(id);
@@ -2078,71 +2147,85 @@ function renderSession(id) {
         </div>
       </section>
 
-      <div class="grid gap-6 xl:grid-cols-[1.55fr,0.85fr]">
-        <div class="space-y-6">
-          <section class="card-pro p-6 sm:p-7 md:p-8">
-            <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
-              <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Marco docente</h3>
-              <span class="text-[10px] font-black uppercase tracking-[0.16em] text-[#365978]">Síntesis</span>
-            </div>
-            <p class="mt-5 text-sm sm:text-base md:text-lg font-semibold leading-relaxed text-[#152230]">${contenido.objetivo}</p>
-            <p class="mt-4 text-sm sm:text-base leading-relaxed text-slate-600">${contenido.resumen}</p>
+      <div class="grid gap-4 lg:gap-6 xl:grid-cols-[1.55fr,0.85fr]">
+        <div class="space-y-4 lg:space-y-6">
+          ${renderAccordionCard({
+            id: `${panelPrefix}-marco`,
+            title: 'Marco docente',
+            badge: 'Síntesis',
+            intro: 'Resumen breve del objetivo y de la lógica de lectura del módulo.',
+            mobileOpen: true,
+            body: `
+              <p class="text-sm font-semibold leading-relaxed text-[#152230] sm:text-base md:text-lg">${contenido.objetivo}</p>
+              <p class="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base">${contenido.resumen}</p>
+            `
+          })}
+
+          <section class="grid gap-4 lg:grid-cols-2 lg:gap-6">
+            ${renderAccordionCard({
+              id: `${panelPrefix}-ruta`,
+              title: 'Ruta práctica',
+              badge: '4 pasos',
+              intro: 'Secuencia de lectura orientada a decisión clínica.',
+              body: renderStepList(apoyo.ruta)
+            })}
+            ${renderAccordionCard({
+              id: `${panelPrefix}-checklist`,
+              title: 'Qué mirar primero',
+              badge: 'Checklist',
+              intro: 'Puntos de entrada para no perder el dato que cambia la interpretación.',
+              body: renderBulletList(contenido.puntosClave)
+            })}
           </section>
 
-          <section class="grid gap-6 lg:grid-cols-2">
-            <div class="card-pro p-6 sm:p-7 md:p-8">
-              <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Ruta práctica</h3>
-                <span class="text-[10px] font-black uppercase tracking-[0.16em] text-[#365978]">4 pasos</span>
-              </div>
-              <div class="mt-5">${renderStepList(apoyo.ruta)}</div>
-            </div>
-            <div class="card-pro p-6 sm:p-7 md:p-8">
-              <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Qué mirar primero</h3>
-                <span class="text-[10px] font-black uppercase tracking-[0.16em] text-[#365978]">Checklist</span>
-              </div>
-              <div class="mt-5">${renderBulletList(contenido.puntosClave)}</div>
-            </div>
-          </section>
-
-          <section class="card-pro p-6 sm:p-7 md:p-8">
-            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 border-b border-slate-100 pb-4">
-              <div>
-                <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Atlas del módulo</h3>
-                <p class="mt-2 text-sm leading-relaxed text-slate-600">Selección de 10 láminas de la bibliografía del proyecto para contrastar patrones, casos y errores de lectura. Pulsa cualquier imagen para verla a mayor tamaño.</p>
-              </div>
-              <span class="text-[10px] font-black uppercase tracking-[0.16em] text-[#365978]">${atlasCount} piezas</span>
-            </div>
-            <div class="mt-5">${renderGallery(contenido.galeria || [], contenido, apoyo)}</div>
-          </section>
+          ${renderAccordionCard({
+            id: `${panelPrefix}-atlas`,
+            title: 'Atlas del módulo',
+            badge: `${atlasCount} piezas`,
+            intro: 'Diez láminas bibliográficas para contrastar patrones, casos y trampas de lectura. Pulsa cualquier imagen para abrirla en modo slide.',
+            mobileOpen: true,
+            body: renderGallery(contenido.galeria || [], contenido, apoyo)
+          })}
         </div>
 
-        <div class="space-y-6">
-          <section class="card-pro p-6 sm:p-7 md:p-8">
-            <div class="flex items-center gap-3">
-              <div class="h-2.5 w-2.5 rounded-full bg-[#cb6b56]"></div>
-              <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Alertas a no minimizar</h3>
-            </div>
-            <div class="mt-5">${renderBulletList(apoyo.alertas, 'red')}</div>
-          </section>
+        <div class="space-y-4 lg:space-y-6">
+          ${renderAccordionCard({
+            id: `${panelPrefix}-alertas`,
+            title: 'Alertas a no minimizar',
+            badge: 'Alerta',
+            intro: 'Hallazgos o contextos que suben el riesgo aunque el ECG parezca discreto.',
+            tone: 'alert',
+            body: renderBulletList(apoyo.alertas, 'red')
+          })}
 
-          <section class="card-pro p-6 sm:p-7 md:p-8 bg-[linear-gradient(180deg,rgba(238,240,238,0.82),rgba(255,255,255,0.84))]">
-            <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-[#365978]">Perla clínica</h3>
-            <p class="mt-5 text-base sm:text-lg font-extrabold italic leading-relaxed text-[#152230]">"${contenido.perla}"</p>
-          </section>
+          ${renderAccordionCard({
+            id: `${panelPrefix}-perla`,
+            title: 'Perla clínica',
+            badge: 'Clave',
+            intro: 'Idea corta para fijar el módulo antes de pasar al siguiente.',
+            tone: 'gold',
+            mobileOpen: true,
+            body: `<p class="text-base font-extrabold italic leading-relaxed text-[#152230] sm:text-lg">"${contenido.perla}"</p>`
+          })}
 
-          <section class="card-pro p-6 sm:p-7 md:p-8">
-            <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Errores frecuentes</h3>
-            <div class="mt-5">${renderBulletList(contenido.errores, 'red')}</div>
-          </section>
+          ${renderAccordionCard({
+            id: `${panelPrefix}-errores`,
+            title: 'Errores frecuentes',
+            badge: 'Evitar',
+            intro: 'Sesgos de lectura que suelen deformar la conclusión.',
+            tone: 'alert',
+            body: renderBulletList(contenido.errores, 'red')
+          })}
 
-          <section class="card-pro p-6 sm:p-7 md:p-8">
-            <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Fuentes revisadas</h3>
-            <div class="mt-5">${renderSourcesList(contenido.fuentes)}</div>
-          </section>
+          ${renderAccordionCard({
+            id: `${panelPrefix}-fuentes`,
+            title: 'Fuentes revisadas',
+            badge: 'Bibliografía',
+            intro: 'Referencias usadas para construir el contenido y el atlas del módulo.',
+            body: renderSourcesList(contenido.fuentes)
+          })}
 
-          <button onclick="toggleGlosario()" class="w-full card-pro p-5 sm:p-6 text-left text-[#9f493f] text-[10px] sm:text-[11px] font-black uppercase tracking-[0.18em] hover:border-[#9f493f]/20 transition-all flex items-center justify-between gap-4">
+          <button onclick="toggleGlosario()" class="w-full card-pro p-4 sm:p-5 sm:text-[11px] text-left text-[#9f493f] text-[10px] font-black uppercase tracking-[0.18em] hover:border-[#9f493f]/20 transition-all flex items-center justify-between gap-4">
             <span class="break-words">Protocolo de seguridad clínica</span>
             <span class="text-xl sm:text-2xl shrink-0">↗</span>
           </button>
@@ -2151,6 +2234,73 @@ function renderSession(id) {
     </div>
   `;
   $('mainContent').scrollTo(0,0);
+}
+
+function renderEvaluationCase(item, idx) {
+  const openByDefault = idx === 0;
+  const progress = Math.round(((idx + 1) / TOTAL_EVALUATION_CASES) * 100);
+
+  return `
+    <section class="evaluation-case card-pro overflow-hidden bg-white" id="q-container-${idx}">
+      <button
+        type="button"
+        class="accordion-trigger flex w-full items-start justify-between gap-4 px-5 py-5 text-left sm:px-6 sm:py-6 md:px-7 md:py-7"
+        aria-expanded="${openByDefault ? 'true' : 'false'}"
+        aria-controls="q-body-${idx}"
+        onclick="toggleAccordion(this)"
+      >
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="bg-[#DCEAF4] text-[#355E86] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest border border-[#355E86]/10">${item.modulo}</span>
+            ${item.origen ? `<span class="border border-slate-200 bg-white text-slate-400 text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest">${item.origen}</span>` : ''}
+          </div>
+          <h3 class="mt-4 text-lg font-bold leading-tight text-[#1F2A36] sm:text-xl md:text-2xl">${item.titulo}</h3>
+        </div>
+        <div class="flex shrink-0 flex-col items-end gap-3">
+          <span class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-300">Progreso ${progress}%</span>
+          <span class="accordion-chevron inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 lg:hidden" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+        </div>
+      </button>
+      <div id="q-body-${idx}" class="${openByDefault ? 'block' : 'hidden lg:block'} border-t border-slate-100 px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6 md:px-7 md:pb-7 md:pt-6">
+        <p class="text-sm leading-relaxed text-slate-600 sm:text-base">${item.escenario}</p>
+        <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+          <div class="p-3 sm:p-4 bg-slate-100">
+            <button
+              type="button"
+              class="block w-full overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200"
+              data-src="${escapeAttr(item.img)}"
+              data-alt="${escapeAttr(item.alt)}"
+              data-title="${escapeAttr(item.titulo)}"
+              data-source="${escapeAttr(item.fuente)}"
+              data-kicker="Caso clínico ECG"
+              data-description="${escapeAttr(item.escenario || '')}"
+              data-focus="${escapeAttr(item.pistaVisual || '')}"
+              data-link="${escapeAttr(item.enlace || '')}"
+              onclick="openFigure(this)"
+            >
+              <img src="${item.img}" alt="${item.alt}" loading="lazy" decoding="async" class="w-full h-auto object-contain bg-white">
+            </button>
+          </div>
+          <div class="px-4 pb-4 sm:px-5 flex flex-wrap items-center justify-between gap-3">
+            <p class="text-xs uppercase tracking-[0.14em] text-slate-400">${item.fuente}</p>
+            <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#365978]">Ampliar imagen</span>
+          </div>
+        </div>
+        <div class="mt-5 grid gap-4 md:gap-5">
+          ${item.opciones.map((ans, aIdx) => `
+            <button onclick="checkCaseAnswer(this, ${idx}, ${aIdx})" class="option-btn w-full text-left p-4 sm:p-5 rounded-xl border-2 border-slate-100 bg-slate-50 hover:bg-[#DCEAF4] hover:border-slate-200 transition-all text-sm font-semibold text-slate-700 break-words">
+              ${ans}
+            </button>
+          `).join('')}
+        </div>
+        <div id="feedback-${idx}" class="feedback-box"></div>
+      </div>
+    </section>
+  `;
 }
 
 function renderEvaluation() {
@@ -2173,56 +2323,17 @@ function renderEvaluation() {
         </div>
       </div>
 
-      <div class="card-pro p-6 sm:p-7 md:p-8 rounded-2xl">
-        <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6 border-b border-slate-100 pb-4">Cómo usar este bloque</h4>
-        <p class="text-slate-700 leading-relaxed text-sm sm:text-base">Lee el contexto clínico, revisa la imagen y selecciona una respuesta. El sistema marca el acierto o error y añade la razón bibliográfica del diagnóstico correcto.</p>
-      </div>
+      ${renderAccordionCard({
+        id: 'evaluation-howto',
+        title: 'Cómo usar este bloque',
+        badge: 'Guía',
+        intro: 'Lectura rápida antes de empezar a responder casos.',
+        mobileOpen: false,
+        body: '<p class="text-sm leading-relaxed text-slate-700 sm:text-base">Lee el contexto clínico, revisa la imagen y selecciona una respuesta. El sistema marca el acierto o error y añade la razón bibliográfica del diagnóstico correcto.</p>'
+      })}
       
-      <div class="space-y-6 sm:space-y-8 md:space-y-12">
-        ${CASOS_EVALUACION.map((item, idx) => `
-          <div class="evaluation-case card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl bg-white" id="q-container-${idx}">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-10">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="bg-[#DCEAF4] text-[#355E86] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest border border-[#355E86]/10">${item.modulo}</span>
-                ${item.origen ? `<span class="border border-slate-200 bg-white text-slate-400 text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest">${item.origen}</span>` : ''}
-              </div>
-              <span class="text-slate-300 text-xs font-mono font-bold tracking-widest">PROGRESO ${Math.round((idx+1)/TOTAL_EVALUATION_CASES*100)}%</span>
-            </div>
-            <h3 class="text-xl sm:text-2xl font-bold text-[#1F2A36] leading-tight break-words">${item.titulo}</h3>
-            <p class="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">${item.escenario}</p>
-            <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-              <div class="p-3 sm:p-4 bg-slate-100">
-                <button
-                  type="button"
-                  class="block w-full overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200"
-                  data-src="${escapeAttr(item.img)}"
-                  data-alt="${escapeAttr(item.alt)}"
-                  data-title="${escapeAttr(item.titulo)}"
-                  data-source="${escapeAttr(item.fuente)}"
-                  data-kicker="Caso clínico ECG"
-                  data-description="${escapeAttr(item.escenario || '')}"
-                  data-focus="${escapeAttr(item.pistaVisual || '')}"
-                  data-link="${escapeAttr(item.enlace || '')}"
-                  onclick="openFigure(this)"
-                >
-                  <img src="${item.img}" alt="${item.alt}" loading="lazy" decoding="async" class="w-full h-auto object-contain bg-white">
-                </button>
-              </div>
-              <div class="px-4 sm:px-5 pb-4 flex flex-wrap items-center justify-between gap-3">
-                <p class="text-xs uppercase tracking-[0.14em] text-slate-400">${item.fuente}</p>
-                <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#365978]">Ampliar imagen</span>
-              </div>
-            </div>
-            <div class="grid gap-4 md:gap-5">
-              ${item.opciones.map((ans, aIdx) => `
-                <button onclick="checkCaseAnswer(this, ${idx}, ${aIdx})" class="option-btn w-full text-left p-4 sm:p-5 md:p-6 rounded-xl border-2 border-slate-100 bg-slate-50 hover:bg-[#DCEAF4] hover:border-slate-200 transition-all text-sm font-semibold text-slate-700 break-words">
-                  ${ans}
-                </button>
-              `).join('')}
-            </div>
-            <div id="feedback-${idx}" class="feedback-box"></div>
-          </div>
-        `).join('')}
+      <div class="space-y-4 sm:space-y-6 md:space-y-8">
+        ${CASOS_EVALUACION.map((item, idx) => renderEvaluationCase(item, idx)).join('')}
       </div>
       
       <div class="pt-8 md:pt-12 flex flex-col items-center gap-4 md:gap-6">
@@ -2292,10 +2403,20 @@ function toggleGlosario() {
   $('glosarioModal').classList.toggle('hidden'); 
 }
 
+function registerServiceWorker() {
+  if(!('serviceWorker' in navigator)) return;
+  const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  if(window.location.protocol !== 'https:' && !isLocalHost) return;
+  navigator.serviceWorker.register('./sw.js').catch((error) => {
+    console.warn('No se pudo registrar el service worker:', error);
+  });
+}
+
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
   renderSidebar();
   renderHome();
+  registerServiceWorker();
 });
 
 window.addEventListener('resize', () => {
