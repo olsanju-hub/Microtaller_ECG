@@ -5,23 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Microtaller ECG</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assent/atlas/atlas-data.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
     
     :root {
-      --color-titulo: #355E86;
-      --color-texto-principal: #1F2A36;
-      --color-texto-secundario: #5B6670;
-      --color-fondo: #F3F4F4;
-      --color-caja-azul: #8FB5D3;
-      --color-caja-suave: #DCEAF4;
-      --color-caja-neutra: #EEE8D8;
-      --color-alerta: #E67F61;
-      --color-resalte: #C24F45;
-      --color-detalle: #C8A22A;
-      /* Sombras profundas (incrementadas para mayor profundidad visual) */
-      --shadow-tool: 0 14px 35px -5px rgba(0, 0, 0, 0.22), 0 12px 18px -8px rgba(0, 0, 0, 0.18);
-      --shadow-active: 0 28px 45px -12px rgba(31, 42, 54, 0.35);
+      --color-titulo: #365978;
+      --color-texto-principal: #152230;
+      --color-texto-secundario: #5f6b78;
+      --color-fondo: #edf2f8;
+      --color-caja-azul: #8aa6c2;
+      --color-caja-suave: #deebf6;
+      --color-caja-neutra: #eef0ee;
+      --color-alerta: #cb6b56;
+      --color-resalte: #9f493f;
+      --color-detalle: #9e8450;
+      --color-linea: rgba(21, 34, 48, 0.08);
+      --shadow-tool: 0 28px 60px -40px rgba(18, 31, 43, 0.42), 0 12px 26px -20px rgba(18, 31, 43, 0.26);
+      --shadow-active: 0 30px 72px -40px rgba(18, 31, 43, 0.48), 0 14px 32px -24px rgba(53, 89, 120, 0.22);
     }
 
     html, body {
@@ -29,8 +30,11 @@
     }
 
     body { 
-      font-family: 'Inter', sans-serif; 
-      background-color: var(--color-fondo); 
+      font-family: 'Manrope', sans-serif; 
+      background:
+        radial-gradient(circle at top left, rgba(73, 111, 151, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(158, 132, 80, 0.08), transparent 24%),
+        linear-gradient(180deg, #f7f9fc 0%, var(--color-fondo) 52%, #e9eff6 100%);
       color: var(--color-texto-principal);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
@@ -42,56 +46,149 @@
 
     /* Estética Liquid-Glass Sutil */
     .glass-surface {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.74);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.65);
     }
 
     .card-pro {
-      background: white;
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 18px;
       box-shadow: var(--shadow-tool);
-      border: 1px solid rgba(0,0,0,0.05);
+      border: 1px solid var(--color-linea);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .card-pro:hover { 
-      transform: translateY(-4px); 
+      transform: translateY(-2px); 
       box-shadow: var(--shadow-active);
-      border-color: var(--color-caja-azul);
+      border-color: rgba(53, 89, 120, 0.18);
+    }
+
+    .chrome-shell {
+      background: rgba(248, 251, 255, 0.78);
+      border-bottom: 1px solid rgba(21, 34, 48, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .sidebar-shell {
+      background: rgba(247, 249, 252, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .main-shell {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0.08)),
+        radial-gradient(circle at top, rgba(53, 89, 120, 0.06), transparent 30%);
+    }
+
+    .hero-panel {
+      background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(245,248,252,0.8));
+      border: 1px solid rgba(21, 34, 48, 0.08);
+    }
+
+    .metric-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(21, 34, 48, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
+    }
+
+    .gallery-card {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(21, 34, 48, 0.08);
+      border-radius: 18px;
+      box-shadow: 0 20px 44px -36px rgba(18, 31, 43, 0.42);
+      overflow: hidden;
+    }
+
+    .gallery-media {
+      display: block;
+      width: 100%;
+      background: linear-gradient(180deg, rgba(239,244,249,0.95), rgba(248,251,254,0.9));
+    }
+
+    .gallery-media img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      background: linear-gradient(180deg, rgba(244,248,252,0.96), rgba(255,255,255,0.94));
+    }
+
+    .figure-modal-shell {
+      background: rgba(249, 251, 254, 0.94);
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 36px 90px -45px rgba(12, 20, 31, 0.75);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .step-list {
+      counter-reset: module-step;
+    }
+
+    .step-list li {
+      counter-increment: module-step;
+    }
+
+    .step-list li::before {
+      content: counter(module-step, decimal-leading-zero);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      margin-top: 0.1rem;
+      border-radius: 999px;
+      background: rgba(53, 89, 120, 0.1);
+      color: var(--color-titulo);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
     }
 
     /* Firma Editorial Discreta */
     .editorial-signature {
       position: fixed;
-      bottom: 1.2rem;
-      right: 1.2rem;
-      width: 65px;
+      bottom: 1rem;
+      left: 1rem;
+      width: 56px;
       height: auto;
       z-index: 9999;
-      opacity: 0.4;
+      opacity: 0.16;
       pointer-events: none;
       mix-blend-mode: multiply;
       transition: opacity 0.4s ease;
     }
 
     .nav-active { 
-      background: linear-gradient(135deg, white 0%, #eef7ff 100%) !important;
+      background: linear-gradient(145deg, rgba(255,255,255,0.96) 0%, rgba(238,245,252,0.96) 100%) !important;
       color: var(--color-titulo) !important;
       font-weight: 700;
-      box-shadow: inset 4px 0 0 var(--color-titulo), var(--shadow-tool);
+      box-shadow: inset 3px 0 0 var(--color-titulo), 0 18px 36px -32px rgba(18, 31, 43, 0.6);
     }
 
     .bloque-header {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
       color: var(--color-titulo);
-      letter-spacing: 0.1em;
-      padding: 1.8rem 1.5rem 0.6rem;
+      letter-spacing: 0.16em;
+      padding: 1.4rem 1.35rem 0.55rem;
       text-transform: uppercase;
-      opacity: 0.9;
-      border-bottom: 1px solid rgba(53, 94, 134, 0.1);
-      margin-bottom: 0.5rem;
+      opacity: 0.76;
+      border-bottom: 1px solid rgba(53, 94, 134, 0.09);
+      margin-bottom: 0.45rem;
     }
 
     .bib-btn-circle {
@@ -109,15 +206,15 @@
     /* Cuadrícula sutil decorativa */
     .ecg-grid-pattern {
       background-image: 
-        linear-gradient(rgba(200, 162, 42, 0.05) 1px, transparent 1px), 
-        linear-gradient(90deg, rgba(200, 162, 42, 0.05) 1px, transparent 1px);
-      background-size: 30px 30px;
+        linear-gradient(rgba(53, 89, 120, 0.04) 1px, transparent 1px), 
+        linear-gradient(90deg, rgba(53, 89, 120, 0.04) 1px, transparent 1px);
+      background-size: 34px 34px;
     }
 
     .feedback-box {
       margin-top: 1.5rem;
-      padding: 1.25rem;
-      border-radius: 12px;
+      padding: 1.25rem 1.3rem;
+      border-radius: 16px;
       font-size: 0.9rem;
       line-height: 1.6;
       display: none;
@@ -147,14 +244,14 @@
 
     @media (max-width: 1023px) {
       .editorial-signature {
-        width: 46px;
+        width: 40px;
         bottom: 0.8rem;
-        right: 0.8rem;
-        opacity: 0.22;
+        left: 0.8rem;
+        opacity: 0.14;
       }
 
       .bloque-header {
-        padding: 1.2rem 1.1rem 0.5rem;
+        padding: 1.1rem 1rem 0.45rem;
       }
 
       .card-pro:hover {
@@ -179,7 +276,7 @@
 <img src="/assent/image/firma.png" alt="Firma Autor" class="editorial-signature" onerror="this.style.display='none'">
 
 <!-- CABECERA PROFESIONAL -->
-<header class="min-h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-3 px-4 sm:px-5 lg:px-6 py-3 shrink-0 z-50 shadow-sm flex-wrap lg:flex-nowrap">
+<header class="chrome-shell glass-surface min-h-16 sticky top-0 flex items-center justify-between gap-3 px-4 sm:px-5 lg:px-6 py-3 shrink-0 z-50 shadow-sm flex-wrap lg:flex-nowrap">
   <div class="flex items-center min-w-0">
     <button onclick="toggleMobileSidebar()" class="lg:hidden mr-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:text-[#355E86] hover:border-[#355E86]/30 transition-colors" aria-label="Abrir navegación">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -202,7 +299,7 @@
 
 <div id="mobileSidebarOverlay" class="mobile-overlay fixed inset-0 z-40 hidden bg-[#1F2A36]/45 backdrop-blur-[2px] lg:hidden" onclick="closeMobileSidebar()"></div>
 
-<aside id="mobileSidebar" class="mobile-sidebar fixed inset-y-0 left-0 z-50 flex w-[min(88vw,20rem)] -translate-x-full flex-col border-r border-slate-200 bg-slate-50 shadow-2xl lg:hidden">
+<aside id="mobileSidebar" class="mobile-sidebar sidebar-shell fixed inset-y-0 left-0 z-50 flex w-[min(88vw,20rem)] -translate-x-full flex-col border-r border-slate-200 shadow-2xl lg:hidden">
   <div class="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-4">
     <div>
       <div class="text-[10px] font-black uppercase tracking-[0.22em] text-[#355E86]">Navegación</div>
@@ -220,7 +317,7 @@
 
 <div class="flex flex-1 min-h-0 overflow-hidden">
   <!-- SIDEBAR -->
-  <aside class="hidden lg:flex lg:w-64 xl:w-72 bg-slate-50 border-r border-slate-200 flex-col shrink-0 overflow-y-auto">
+  <aside class="sidebar-shell hidden lg:flex lg:w-64 xl:w-72 border-r border-slate-200 flex-col shrink-0 overflow-y-auto">
     <nav id="sidebarNav" class="flex-1 py-4"></nav>
     <div class="p-6 border-t border-slate-200 bg-white/50">
       <button onclick="renderEvaluation()" class="w-full btn-eval text-white py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-tool">
@@ -230,7 +327,7 @@
   </aside>
 
   <!-- ÁREA DE CONTENIDO -->
-  <main id="mainContent" class="flex-1 min-w-0 overflow-y-auto overflow-x-hidden ecg-grid-pattern bg-[#F3F4F4] p-4 sm:p-6 md:p-8 xl:p-12 relative">
+  <main id="mainContent" class="main-shell flex-1 min-w-0 overflow-y-auto overflow-x-hidden ecg-grid-pattern p-4 sm:p-6 md:p-8 xl:p-10 2xl:p-12 relative">
     <!-- Inyectado por JS -->
   </main>
 </div>
@@ -255,11 +352,33 @@
   </div>
 </div>
 
+<div id="figureModal" class="fixed inset-0 z-[120] hidden bg-[#0f1724]/72 backdrop-blur-[5px] p-4" onclick="closeFigure()">
+  <div class="mx-auto flex h-full max-w-6xl items-center justify-center">
+    <div class="figure-modal-shell w-full max-w-5xl" onclick="event.stopPropagation()">
+      <div class="flex items-start justify-between gap-6 border-b border-slate-200/80 px-5 py-4 sm:px-6 sm:py-5">
+        <div class="min-w-0">
+          <p id="figureModalKicker" class="text-[10px] font-black uppercase tracking-[0.2em] text-[#365978]">Atlas ECG</p>
+          <h3 id="figureModalTitle" class="mt-2 text-lg sm:text-xl font-bold text-[#152230]"></h3>
+          <p id="figureModalSource" class="mt-2 text-xs uppercase tracking-[0.14em] text-slate-400"></p>
+        </div>
+        <button onclick="closeFigure()" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-[#365978] hover:border-[#365978]/20 transition-colors" aria-label="Cerrar imagen">×</button>
+      </div>
+      <div class="bg-[linear-gradient(180deg,rgba(243,247,251,0.92),rgba(255,255,255,0.95))] p-4 sm:p-5 md:p-6">
+        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          <img id="figureModalImg" src="" alt="" class="w-full h-auto max-h-[72vh] object-contain bg-white">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 'use strict';
 
 const $ = (id) => document.getElementById(id);
 const $$ = (sel, context = document) => Array.from(context.querySelectorAll(sel));
+const ECG_ATLAS = window.ECG_ATLAS || {};
+const TOTAL_ATLAS = Object.values(ECG_ATLAS).reduce((sum, gallery) => sum + gallery.length, 0);
 
 const BLOQUES = [
   {
@@ -1139,6 +1258,197 @@ const CASOS_EVALUACION = [
   }
 ];
 
+const MODULOS_APOYO = {
+  s1: {
+    ruta: [
+      "Comprueba calibración, velocidad y calidad del trazado antes de etiquetar cualquier hallazgo.",
+      "Verifica si el ritmo es sinusal y si cada onda P conduce a un QRS compatible.",
+      "Mide PR, QRS y QTc con una secuencia fija para no saltarte errores técnicos.",
+      "Cruza siempre el trazo con la clínica; si no encaja, repite el ECG."
+    ],
+    alertas: [
+      "Electrodos mal colocados o derivaciones incompatibles con la clínica.",
+      "QRS claramente ancho o QT prolongado en un trazado aparentemente rutinario.",
+      "Ritmo no sinusal acompañado de mareo, dolor torácico o disnea."
+    ]
+  },
+  s2: {
+    ruta: [
+      "Reconoce primero si el patrón pertenece a ritmo, conducción, cavidades, ST-T o electrolitos.",
+      "Localiza la derivación donde el hallazgo es más evidente y confirma que se repite en derivaciones vecinas.",
+      "Decide si el patrón puede ser antiguo o si sugiere un cambio agudo.",
+      "Usa la biblioteca visual como referencia rápida y después vuelve al contexto clínico."
+    ],
+    alertas: [
+      "Elevación del ST, preexcitación o patrón de Brugada.",
+      "Bloqueos de alto grado o pausas no esperadas.",
+      "Taquicardia ancha o irregular con compromiso clínico."
+    ]
+  },
+  s3: {
+    ruta: [
+      "Define primero qué significa normal para ese paciente y para ese momento clínico.",
+      "Confirma ritmo sinusal, voltajes razonables y ausencia de cambios dinámicos.",
+      "Distingue variantes benignas de hallazgos que solo parecen normales fuera de contexto.",
+      "Si persiste la sospecha clínica, seriación y comparación valen más que una sola lectura."
+    ],
+    alertas: [
+      "Síntomas intensos con ECG inicialmente normal.",
+      "Cambios sutiles de ST-T respecto a un trazado previo.",
+      "ECG normal aparente con mala técnica o artefacto."
+    ]
+  },
+  s4: {
+    ruta: [
+      "En disnea, define frecuencia, ritmo y signos de sobrecarga derecha o izquierda.",
+      "Busca datos de cor pulmonale, hipertensión pulmonar o insuficiencia cardiaca.",
+      "Diferencia cambios crónicos de un patrón agudo compatible con TEP o descompensación.",
+      "Integra ECG con saturación, exploración y antecedentes respiratorios."
+    ],
+    alertas: [
+      "Patrón de sobrecarga derecha nuevo con inestabilidad respiratoria.",
+      "Arritmia rápida en contexto de insuficiencia cardiaca o edema agudo.",
+      "Bradicardia o pausas que expliquen hipoperfusión y disnea."
+    ]
+  },
+  s5: {
+    ruta: [
+      "Localiza el territorio afectado y confirma si hay reciprocidad o cambios dinámicos.",
+      "Distingue isquemia, lesión e infarto según ST, onda T y ondas Q.",
+      "Repite ECG cuando la clínica manda aunque el primer trazado sea poco llamativo.",
+      "Toda lectura de dolor torácico debe ir unida a tiempo de evolución y biomarcadores."
+    ],
+    alertas: [
+      "Elevación del ST o equivalentes de oclusión coronaria.",
+      "Descenso dinámico del ST u ondas T isquémicas con dolor activo.",
+      "Arritmias o bloqueos nuevos en contexto de síndrome coronario."
+    ]
+  },
+  s6: {
+    ruta: [
+      "Decide si la taquicardia es regular o irregular antes de afinar el diagnóstico.",
+      "Clasifica el QRS como estrecho o ancho y busca ondas P útiles.",
+      "Distingue extrasistolia, taquicardia supraventricular, flutter y fibrilación auricular.",
+      "Si el episodio es intermitente, documentarlo durante los síntomas es prioritario."
+    ],
+    alertas: [
+      "Taquicardia ancha irregular o muy rápida.",
+      "Palpitaciones asociadas a síncope o presíncope.",
+      "Preexcitación, flutter 1:1 o fibrilación auricular con alta respuesta."
+    ]
+  },
+  s7: {
+    ruta: [
+      "Pregunta si el síncope es arrítmico hasta que el ECG sugiera lo contrario.",
+      "Busca pausas, bloqueos AV, disfunción sinusal o síndromes eléctricos heredables.",
+      "Revisa medicación, marcapasos y trazados previos antes de restar importancia al episodio.",
+      "Un ECG discreto no excluye riesgo si la historia es de alto impacto."
+    ],
+    alertas: [
+      "Bloqueo AV de alto grado, pausas o marcapasos disfuncionante.",
+      "Brugada, QT largo o preexcitación con síntomas.",
+      "Síncope de esfuerzo, supino o con antecedentes familiares de muerte súbita."
+    ]
+  },
+  s8: {
+    ruta: [
+      "Mide PR y QRS antes de nombrar el trastorno de conducción.",
+      "Ubica el problema en nodo AV, His-Purkinje o fascículos.",
+      "Valora combinaciones bifasciculares y trifasciculares con la clínica.",
+      "Decide pronto si el hallazgo obliga a monitorización o marcapasos."
+    ],
+    alertas: [
+      "Mobitz II, bloqueo 2:1 o bloqueo completo.",
+      "BRD/BRI nuevos con síntomas de bajo gasto o síncope.",
+      "Pausas sinusales significativas o alternancia de bloqueos."
+    ]
+  },
+  s9: {
+    ruta: [
+      "Usa morfología de onda P, voltajes y eje para sospechar cavidades aumentadas.",
+      "Distingue hipertrofia verdadera de voltajes altos sin significado clínico.",
+      "Interpreta la repolarización secundaria dentro del contexto estructural.",
+      "Confirma siempre con eco o imagen cuando el ECG sugiere remodelado importante."
+    ],
+    alertas: [
+      "Sobrecarga derecha en paciente respiratorio o con dolor torácico.",
+      "HVI con strain y síntomas de esfuerzo o síncope.",
+      "Crecimiento auricular asociado a arritmias nuevas."
+    ]
+  },
+  s10: {
+    ruta: [
+      "Diferencia alteraciones primarias de ST-T de cambios secundarios por QRS ancho o hipertrofia.",
+      "Observa si la onda T es simétrica, dinámica o territorial.",
+      "Busca patrones recíprocos y equivalentes posteriores cuando no todo es frontal.",
+      "El valor está en la comparación seriada más que en una sola captura."
+    ],
+    alertas: [
+      "ST dinámico en dolor torácico o disnea aguda.",
+      "Repolarización anómala con QRS ancho que no cuadra con el patrón de base.",
+      "Descenso difuso del ST o elevación focal con inestabilidad."
+    ]
+  },
+  s11: {
+    ruta: [
+      "Piensa en electrolitos cuando cambian T, U, PR o la anchura del QRS.",
+      "Relaciona potasio con T/U y calcio con el QT para orientar la urgencia.",
+      "No interpretes el ECG aislado: confirma siempre con analítica inmediata.",
+      "El trazo puede adelantarse al laboratorio o ser la primera alarma clínica."
+    ],
+    alertas: [
+      "Ondas T picudas con ensanchamiento progresivo del QRS.",
+      "Ondas U prominentes con debilidad, arritmias o digoxina.",
+      "QT claramente alterado en contexto de trastorno electrolítico."
+    ]
+  },
+  s12: {
+    ruta: [
+      "Pregunta por digoxina, antiarrítmicos, psicofármacos y combinaciones que alargan QT.",
+      "Separa efecto farmacológico esperado de toxicidad o interacción peligrosa.",
+      "Busca ectopia, bradicardia, bloqueos y cambios de ST asociados al tratamiento.",
+      "Valora función renal y electrolitos porque cambian el riesgo del fármaco."
+    ],
+    alertas: [
+      "Cubeta digitálica acompañada de ectopia o bloqueo.",
+      "QT prolongado en paciente polimedicado.",
+      "Arritmias nuevas tras iniciar o ajustar tratamiento."
+    ]
+  },
+  s13: {
+    ruta: [
+      "Reconoce sin demora Brugada, WPW y QT largo porque cambian el manejo de inmediato.",
+      "Añade síntomas, historia familiar y desencadenantes al análisis del trazado.",
+      "Evita fármacos incorrectos si sospechas fibrilación auricular preexcitada.",
+      "Deriva a electrofisiología cuando el ECG sugiere canalopatía o vía accesoria de riesgo."
+    ],
+    alertas: [
+      "Brugada tipo 1 con síncope o fiebre.",
+      "Fibrilación auricular en síndrome de WPW.",
+      "QT largo congénito o adquirido con presíncope o torsades."
+    ]
+  },
+  s14: {
+    ruta: [
+      "Empieza siempre por técnica, ritmo, conducción, eje y repolarización.",
+      "Después decide si el trazado explica la clínica o solo acompaña el contexto.",
+      "Usa la pregunta clave: tranquilizar, repetir, monitorizar o derivar ya.",
+      "La integración clínica es la diferencia entre describir un ECG y tomar una buena decisión."
+    ],
+    alertas: [
+      "Discordancia fuerte entre síntomas y lectura aparentemente banal.",
+      "Suma de varias alteraciones pequeñas que juntas cambian el riesgo.",
+      "Necesidad de seriación, comparación o derivación urgente pese a dudas iniciales."
+    ]
+  }
+};
+
+Object.keys(MODULOS_CONTENIDO).forEach(id => {
+  if(ECG_ATLAS[id]) {
+    MODULOS_CONTENIDO[id].galeria = ECG_ATLAS[id];
+  }
+});
+
 function clearActiveNav() {
   $$('[data-session-id]').forEach(btn => btn.classList.remove('nav-active'));
 }
@@ -1193,11 +1503,20 @@ function renderSidebar() {
       nav.appendChild(label);
 
       b.sesiones.forEach(s => {
+        const atlasCount = (ECG_ATLAS[s.id] || []).length;
         const btn = document.createElement('button');
         btn.dataset.sessionId = s.id;
-        btn.className = 'w-full text-left px-4 sm:px-5 lg:px-6 py-3 text-[12px] sm:text-[12.5px] flex items-center gap-3 hover:bg-white transition-all text-slate-500 border-b border-slate-50/50';
+        btn.className = 'w-full text-left px-4 sm:px-5 lg:px-6 py-3.5 hover:bg-white/80 transition-all text-slate-500 border-b border-slate-100/80';
         btn.onclick = () => renderSession(s.id);
-        btn.innerHTML = `<span class="w-5 h-5 flex items-center justify-center border border-slate-300 text-[9px] font-black rounded-md shrink-0 bg-white/40">${s.num}</span><span class="truncate font-medium">${s.title}</span>`;
+        btn.innerHTML = `
+          <span class="flex items-start gap-3">
+            <span class="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-lg border border-slate-300/90 bg-white text-[9px] font-black text-slate-500 shrink-0">${s.num}</span>
+            <span class="min-w-0">
+              <span class="block truncate text-[12px] font-semibold text-[#152230]">${s.title}</span>
+              <span class="mt-1 block text-[10px] uppercase tracking-[0.14em] text-slate-400">${atlasCount} láminas</span>
+            </span>
+          </span>
+        `;
         nav.appendChild(btn);
       });
     });
@@ -1231,24 +1550,33 @@ function renderSourcesList(items) {
   `;
 }
 
+function renderStepList(items) {
+  return `
+    <ol class="step-list space-y-4">
+      ${items.map(item => `
+        <li class="flex items-start gap-4 rounded-2xl border border-slate-200/80 bg-white/65 px-4 py-4">
+          <span class="text-sm leading-relaxed text-slate-700">${item}</span>
+        </li>
+      `).join('')}
+    </ol>
+  `;
+}
+
 function renderGallery(gallery) {
   return `
-    <div class="grid gap-5 md:gap-6 lg:grid-cols-2">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       ${gallery.map(item => `
-        <figure class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-          <div class="flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3">
-            <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#355E86]">Lámina ECG</span>
-            <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">Bibliografía</span>
-          </div>
-          <div class="p-3 sm:p-4 bg-slate-100">
-            <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
-              <img src="${item.src}" alt="${item.alt}" loading="eager" decoding="async" class="w-full h-auto object-contain bg-white">
+        <figure class="gallery-card">
+          <button type="button" class="gallery-media text-left" data-src="${item.src}" data-alt="${item.alt}" data-title="${item.titulo}" data-source="${item.fuente}" onclick="openFigure(this)">
+            <img src="${item.src}" alt="${item.alt}" loading="eager" decoding="async">
+          </button>
+          <figcaption class="space-y-2 px-4 pb-4 pt-3">
+            <div class="flex items-center justify-between gap-3">
+              <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#365978]">Atlas ECG</span>
+              <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">Ampliar</span>
             </div>
-          </div>
-          <figcaption class="space-y-2 px-4 pb-4">
-            <h5 class="text-sm sm:text-base font-bold text-[#1F2A36]">${item.titulo}</h5>
-            <p class="text-sm text-slate-600 leading-relaxed">${item.descripcion}</p>
-            <p class="text-xs uppercase tracking-[0.14em] text-slate-400">${item.fuente}</p>
+            <h5 class="text-sm font-semibold leading-snug text-[#152230]">${item.titulo}</h5>
+            <p class="text-[11px] uppercase tracking-[0.14em] text-slate-400">${item.fuente}</p>
           </figcaption>
         </figure>
       `).join('')}
@@ -1256,43 +1584,128 @@ function renderGallery(gallery) {
   `;
 }
 
+function openFigure(trigger) {
+  const modal = $('figureModal');
+  const img = $('figureModalImg');
+  if(!modal || !img || !trigger) return;
+  $('figureModalTitle').textContent = trigger.dataset.title || '';
+  $('figureModalSource').textContent = trigger.dataset.source || '';
+  img.src = trigger.dataset.src || '';
+  img.alt = trigger.dataset.alt || trigger.dataset.title || '';
+  modal.classList.remove('hidden');
+  document.body.classList.add('overflow-hidden');
+}
+
+function closeFigure() {
+  const modal = $('figureModal');
+  const img = $('figureModalImg');
+  if(!modal || !img) return;
+  modal.classList.add('hidden');
+  img.src = '';
+  img.alt = '';
+  if(!$('mobileSidebar') || !$('mobileSidebar').classList.contains('is-open')) {
+    document.body.classList.remove('overflow-hidden');
+  }
+}
+
 function renderHome() {
   closeMobileSidebar();
   clearActiveNav();
   
+  const sesiones = BLOQUES.flatMap(b => b.sesiones);
   const main = $('mainContent');
   main.innerHTML = `
-    <div class="max-w-6xl mx-auto fade-in space-y-8 md:space-y-12 pb-16 md:pb-24">
-      <div class="card-pro p-6 sm:p-8 md:p-12 xl:p-20 rounded-2xl relative overflow-hidden bg-white">
-        <div class="absolute -right-16 -top-16 sm:-right-20 sm:-top-20 w-48 h-48 sm:w-72 sm:h-72 md:w-96 md:h-96 bg-[#355E86]/10 rounded-full blur-[90px] md:blur-[140px]"></div>
-        <div class="relative z-10">
-          <h2 class="text-4xl sm:text-5xl md:text-7xl xl:text-8xl font-black text-[#1F2A36] tracking-tighter leading-none mb-6 md:mb-8 italic break-words">Microtaller<br><span class="text-[#355E86]">ECG</span></h2>
-          <p class="text-base sm:text-lg md:text-xl text-slate-500 font-light max-w-2xl leading-relaxed italic">Guía cerrada de adiestramiento técnico para residentes orientada exclusivamente a la toma de decisiones clínicas, ahora reforzada con galerías ECG reales y casos clínicos razonados.</p>
-          <div class="mt-8 md:mt-12 flex flex-wrap gap-3 sm:gap-4 md:gap-6">
-             <div class="bg-white border-2 border-slate-100 text-slate-400 px-4 sm:px-6 md:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-md">14 Unidades Docentes</div>
-             <div class="bg-white border-2 border-[#C8A22A]/40 text-[#C8A22A] px-4 sm:px-6 md:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-md">26 Láminas ECG</div>
-             <div class="bg-white border-2 border-slate-100 text-slate-400 px-4 sm:px-6 md:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-md">14 Casos Clínicos</div>
+    <div class="max-w-7xl mx-auto fade-in space-y-6 md:space-y-8 pb-16 md:pb-24">
+      <section class="hero-panel card-pro p-6 sm:p-8 md:p-10 xl:p-12 relative overflow-hidden">
+        <div class="absolute inset-y-0 right-0 hidden xl:block w-1/3 bg-[radial-gradient(circle_at_center,rgba(54,89,120,0.12),transparent_72%)]"></div>
+        <div class="relative z-10 grid gap-6 xl:grid-cols-[1.4fr,0.9fr] xl:items-end">
+          <div class="space-y-4">
+            <p class="text-[10px] font-black uppercase tracking-[0.24em] text-[#365978]">Herramienta docente de lectura clínica ECG</p>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-[-0.04em] leading-[0.95] text-[#152230]">Microtaller ECG</h2>
+            <p class="max-w-3xl text-sm sm:text-base md:text-lg leading-relaxed text-slate-600">Aplicación docente compacta para residentes, con navegación rápida, atlas bibliográfico por módulo, casos clínicos comentados y una interfaz pensada para leer sin ruido en móvil, tablet y escritorio.</p>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+            <div class="metric-pill">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[#365978]/10 text-[#365978] text-xs font-black">14</span>
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Módulos</p>
+                <p class="text-sm font-semibold text-[#152230]">Ruta docente completa</p>
+              </div>
+            </div>
+            <div class="metric-pill">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[#9e8450]/12 text-[#9e8450] text-xs font-black">${TOTAL_ATLAS}</span>
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Láminas</p>
+                <p class="text-sm font-semibold text-[#152230]">10 por módulo</p>
+              </div>
+            </div>
+            <div class="metric-pill">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[#cb6b56]/12 text-[#cb6b56] text-xs font-black">14</span>
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Evaluación</p>
+                <p class="text-sm font-semibold text-[#152230]">Casos con feedback</p>
+              </div>
+            </div>
+            <div class="metric-pill">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-slate-900/6 text-slate-600 text-xs font-black">3</span>
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Uso</p>
+                <p class="text-sm font-semibold text-[#152230]">Leer, comparar y decidir</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6 md:gap-8 lg:gap-10">
-        ${BLOQUES.flatMap(b => b.sesiones).map(s => `
-          <div onclick="renderSession('${s.id}')" class="group card-pro p-6 sm:p-7 md:p-8 rounded-2xl cursor-pointer flex flex-col justify-between min-h-[170px] md:min-h-[190px]">
-            <div>
-              <div class="flex justify-between items-start gap-4 mb-5 sm:mb-6">
-                <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Unidad ${s.num}</span>
-                <span class="bib-btn-circle">B</span>
-              </div>
-              <h3 class="text-xl sm:text-2xl font-bold text-[#1F2A36] group-hover:text-[#355E86] transition-colors leading-tight mb-2 break-words">${s.title}</h3>
-              <p class="text-[12px] text-slate-400 font-medium leading-relaxed">${s.subtitle}</p>
+      </section>
+
+      <section class="grid gap-4 xl:grid-cols-[1.15fr,0.85fr]">
+        <div class="card-pro p-5 sm:p-6 md:p-7">
+          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-[#365978]">Cómo está organizado</p>
+          <div class="mt-4 grid gap-3 md:grid-cols-3">
+            <div class="rounded-2xl border border-slate-200/80 bg-white/70 p-4">
+              <p class="text-xs font-black uppercase tracking-[0.18em] text-slate-400">Base</p>
+              <p class="mt-3 text-sm leading-relaxed text-slate-700">Fundamentos, patrones y normalidad para construir una lectura reproducible.</p>
             </div>
-            <div class="mt-6 sm:mt-8 pt-4 border-t border-slate-50 flex items-center text-[10px] sm:text-[11px] font-black text-[#C24F45] uppercase tracking-[0.1em]">
-              Explorar Contenido <span class="ml-2 group-hover:translate-x-2 transition-transform">→</span>
+            <div class="rounded-2xl border border-slate-200/80 bg-white/70 p-4">
+              <p class="text-xs font-black uppercase tracking-[0.18em] text-slate-400">Síndromes</p>
+              <p class="mt-3 text-sm leading-relaxed text-slate-700">Disnea, dolor torácico, palpitaciones y síncope con enfoque de toma de decisiones.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200/80 bg-white/70 p-4">
+              <p class="text-xs font-black uppercase tracking-[0.18em] text-slate-400">Alteraciones</p>
+              <p class="mt-3 text-sm leading-relaxed text-slate-700">Conducción, cavidades, ST-T, electrolitos, fármacos y síndromes eléctricos.</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-pro p-5 sm:p-6 md:p-7">
+          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-[#365978]">Firma del atlas</p>
+          <p class="mt-4 text-sm leading-relaxed text-slate-600">Cada módulo integra una galería bibliográfica propia con 10 láminas ampliables. La idea no es decorar, sino permitir contraste visual entre patrones, casos y trampas de interpretación.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">Conthe</span>
+            <span class="rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">Hampton</span>
+            <span class="rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">Bayés</span>
+            <span class="rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">Manuales básicos</span>
+          </div>
+        </div>
+      </section>
+      
+      <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5">
+        ${sesiones.map(s => `
+          <div onclick="renderSession('${s.id}')" class="group card-pro p-5 sm:p-6 rounded-2xl cursor-pointer flex flex-col justify-between min-h-[188px]">
+            <div>
+              <div class="flex justify-between items-start gap-4 mb-4">
+                <span class="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Unidad ${s.num}</span>
+                <span class="rounded-full border border-slate-200 bg-white/80 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.14em] text-slate-400">${(ECG_ATLAS[s.id] || []).length} láminas</span>
+              </div>
+              <h3 class="text-xl font-bold text-[#152230] group-hover:text-[#365978] transition-colors leading-tight break-words">${s.title}</h3>
+              <p class="mt-2 text-[13px] text-slate-500 leading-relaxed">${s.subtitle}</p>
+              <p class="mt-4 text-sm leading-relaxed text-slate-600">${MODULOS_CONTENIDO[s.id].objetivo}</p>
+            </div>
+            <div class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+              <span class="text-[10px] font-black uppercase tracking-[0.18em] text-[#9f493f]">Abrir módulo</span>
+              <span class="text-sm font-bold text-slate-300 group-hover:translate-x-1.5 transition-transform">→</span>
             </div>
           </div>
         `).join('')}
-      </div>
+      </section>
     </div>
   `;
   main.scrollTo(0,0);
@@ -1303,62 +1716,116 @@ function renderSession(id) {
   BLOQUES.forEach(b => { const f = b.sesiones.find(x => x.id === id); if(f) ses = f; });
   if(!ses) return;
   const contenido = MODULOS_CONTENIDO[id];
+  const apoyo = MODULOS_APOYO[id] || { ruta: [], alertas: [] };
+  const atlasCount = (contenido.galeria || []).length;
 
   closeMobileSidebar();
   setActiveNav(id);
 
   $('mainContent').innerHTML = `
-    <div class="max-w-6xl mx-auto fade-in space-y-8 md:space-y-12 pb-16 md:pb-24 text-[#1F2A36]">
-      <div class="bg-[#1F2A36] text-white p-6 sm:p-8 md:p-12 xl:p-16 rounded-2xl shadow-tool relative overflow-hidden">
-        <div class="absolute right-0 bottom-0 p-4 sm:p-6 md:p-8 opacity-10 text-[120px] sm:text-[180px] lg:text-[280px] font-black leading-none translate-y-10 sm:translate-y-16 lg:translate-y-24 select-none pointer-events-none">${ses.num}</div>
+    <div class="max-w-7xl mx-auto fade-in space-y-6 md:space-y-8 pb-16 md:pb-24 text-[#152230]">
+      <section class="hero-panel card-pro p-6 sm:p-8 md:p-10 xl:p-12 relative overflow-hidden">
+        <div class="absolute right-6 top-6 hidden md:block text-[100px] lg:text-[140px] font-black tracking-[-0.08em] text-[#365978]/6">${ses.num}</div>
         <div class="relative z-10">
-          <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-6 md:mb-10">
-            <span class="text-[10px] font-bold bg-white/20 px-4 sm:px-6 py-2 rounded-full uppercase tracking-[0.2em] border border-white/5 shadow-sm">Protocolo Académico</span>
-            <span class="bib-btn-circle border-white/40 text-white/50">B</span>
+          <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
+            <span class="rounded-full border border-[#365978]/10 bg-[#365978]/8 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#365978]">Unidad ${ses.num}</span>
+            <span class="rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">${atlasCount} láminas</span>
           </div>
-          <h2 class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-black tracking-tighter leading-tight mb-3 md:mb-4 break-words">${ses.title}</h2>
-          <p class="text-slate-400 text-base sm:text-lg md:text-xl font-light italic opacity-90">${ses.subtitle}</p>
-        </div>
-      </div>
-
-      <div class="grid lg:grid-cols-3 gap-6 md:gap-8 xl:gap-12">
-        <div class="lg:col-span-2 space-y-6 md:space-y-8">
-          <div class="card-pro p-6 sm:p-8 md:p-10 xl:p-12 rounded-2xl">
-            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6 md:mb-8 border-b border-slate-50 pb-5">Marco de Referencia</h4>
-            <p class="text-base md:text-lg font-semibold text-[#1F2A36] leading-relaxed">${contenido.objetivo}</p>
-            <p class="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">${contenido.resumen}</p>
-          </div>
-
-          <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
-            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">Qué Mirar Primero</h4>
-            ${renderBulletList(contenido.puntosClave)}
-          </div>
-
-          <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
-            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">Galería Bibliográfica</h4>
-            <p class="mb-6 text-sm sm:text-base text-slate-600 leading-relaxed">Se muestran varias láminas del fondo bibliográfico para que el módulo se entienda con apoyo visual real y no solo con texto descriptivo.</p>
-            ${renderGallery(contenido.galeria)}
-          </div>
-
-          <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
-            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">Fuentes Revisadas</h4>
-            ${renderSourcesList(contenido.fuentes)}
+          <h2 class="mt-5 text-3xl sm:text-4xl md:text-5xl font-black tracking-[-0.05em] leading-tight">${ses.title}</h2>
+          <p class="mt-3 max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-slate-600">${ses.subtitle}</p>
+          <div class="mt-6 grid gap-3 sm:grid-cols-3">
+            <div class="metric-pill">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-xl bg-[#365978]/10 text-[#365978] text-[10px] font-black">A</span>
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">Objetivo</p>
+                <p class="text-sm font-semibold text-[#152230]">${contenido.objetivo}</p>
+              </div>
+            </div>
+            <div class="metric-pill">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-xl bg-[#9e8450]/12 text-[#9e8450] text-[10px] font-black">10</span>
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">Atlas</p>
+                <p class="text-sm font-semibold text-[#152230]">Galería ampliable por módulo</p>
+              </div>
+            </div>
+            <div class="metric-pill">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-xl bg-[#cb6b56]/12 text-[#cb6b56] text-[10px] font-black">Rx</span>
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">Lectura</p>
+                <p class="text-sm font-semibold text-[#152230]">Secuencia clínica accionable</p>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="space-y-6 md:space-y-8">
-          <div class="bg-[#EEE8D8] p-6 sm:p-8 md:p-10 rounded-2xl shadow-tool border border-[#C8A22A]/10">
-            <h4 class="text-[11px] font-bold text-[#355E86] uppercase tracking-widest mb-6 flex items-center gap-3">
-              <div class="w-2.5 h-2.5 bg-[#E67F61] rounded-full"></div> Perla Clínica
-            </h4>
-            <p class="text-base sm:text-[17px] font-extrabold text-[#1F2A36] leading-relaxed italic">"${contenido.perla}"</p>
-          </div>
-          <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
-            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">Errores Frecuentes</h4>
-            ${renderBulletList(contenido.errores, 'red')}
-          </div>
-          <button onclick="toggleGlosario()" class="w-full bg-white p-5 sm:p-6 md:p-8 rounded-2xl text-[#C24F45] text-[10px] sm:text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-between gap-4 shadow-tool group">
-            <span class="break-words text-left">Protocolo Seguridad</span><span class="text-2xl sm:text-3xl group-hover:rotate-12 transition-transform shrink-0">⚠</span>
+      <div class="grid gap-6 xl:grid-cols-[1.55fr,0.85fr]">
+        <div class="space-y-6">
+          <section class="card-pro p-6 sm:p-7 md:p-8">
+            <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Marco docente</h3>
+              <span class="text-[10px] font-black uppercase tracking-[0.16em] text-[#365978]">Síntesis</span>
+            </div>
+            <p class="mt-5 text-sm sm:text-base md:text-lg font-semibold leading-relaxed text-[#152230]">${contenido.objetivo}</p>
+            <p class="mt-4 text-sm sm:text-base leading-relaxed text-slate-600">${contenido.resumen}</p>
+          </section>
+
+          <section class="grid gap-6 lg:grid-cols-2">
+            <div class="card-pro p-6 sm:p-7 md:p-8">
+              <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Ruta práctica</h3>
+                <span class="text-[10px] font-black uppercase tracking-[0.16em] text-[#365978]">4 pasos</span>
+              </div>
+              <div class="mt-5">${renderStepList(apoyo.ruta)}</div>
+            </div>
+            <div class="card-pro p-6 sm:p-7 md:p-8">
+              <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Qué mirar primero</h3>
+                <span class="text-[10px] font-black uppercase tracking-[0.16em] text-[#365978]">Checklist</span>
+              </div>
+              <div class="mt-5">${renderBulletList(contenido.puntosClave)}</div>
+            </div>
+          </section>
+
+          <section class="card-pro p-6 sm:p-7 md:p-8">
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Atlas del módulo</h3>
+                <p class="mt-2 text-sm leading-relaxed text-slate-600">Selección de 10 láminas de la bibliografía del proyecto para contrastar patrones, casos y errores de lectura. Pulsa cualquier imagen para verla a mayor tamaño.</p>
+              </div>
+              <span class="text-[10px] font-black uppercase tracking-[0.16em] text-[#365978]">${atlasCount} piezas</span>
+            </div>
+            <div class="mt-5">${renderGallery(contenido.galeria || [])}</div>
+          </section>
+        </div>
+
+        <div class="space-y-6">
+          <section class="card-pro p-6 sm:p-7 md:p-8">
+            <div class="flex items-center gap-3">
+              <div class="h-2.5 w-2.5 rounded-full bg-[#cb6b56]"></div>
+              <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Alertas a no minimizar</h3>
+            </div>
+            <div class="mt-5">${renderBulletList(apoyo.alertas, 'red')}</div>
+          </section>
+
+          <section class="card-pro p-6 sm:p-7 md:p-8 bg-[linear-gradient(180deg,rgba(238,240,238,0.82),rgba(255,255,255,0.84))]">
+            <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-[#365978]">Perla clínica</h3>
+            <p class="mt-5 text-base sm:text-lg font-extrabold italic leading-relaxed text-[#152230]">"${contenido.perla}"</p>
+          </section>
+
+          <section class="card-pro p-6 sm:p-7 md:p-8">
+            <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Errores frecuentes</h3>
+            <div class="mt-5">${renderBulletList(contenido.errores, 'red')}</div>
+          </section>
+
+          <section class="card-pro p-6 sm:p-7 md:p-8">
+            <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Fuentes revisadas</h3>
+            <div class="mt-5">${renderSourcesList(contenido.fuentes)}</div>
+          </section>
+
+          <button onclick="toggleGlosario()" class="w-full card-pro p-5 sm:p-6 text-left text-[#9f493f] text-[10px] sm:text-[11px] font-black uppercase tracking-[0.18em] hover:border-[#9f493f]/20 transition-all flex items-center justify-between gap-4">
+            <span class="break-words">Protocolo de seguridad clínica</span>
+            <span class="text-xl sm:text-2xl shrink-0">↗</span>
           </button>
         </div>
       </div>
@@ -1372,15 +1839,24 @@ function renderEvaluation() {
   clearActiveNav();
   const main = $('mainContent');
   main.innerHTML = `
-    <div class="max-w-4xl mx-auto fade-in space-y-8 md:space-y-12 pb-16 md:pb-24">
-      <div class="bg-[#1F2A36] text-white p-6 sm:p-8 md:p-12 xl:p-16 rounded-2xl shadow-tool">
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter mb-4 italic">Módulo de Evaluación</h2>
-        <p class="text-slate-400 text-xs sm:text-sm uppercase tracking-widest italic font-medium">14 casos clínicos con imagen ECG y feedback razonado</p>
+    <div class="max-w-5xl mx-auto fade-in space-y-6 md:space-y-8 pb-16 md:pb-24">
+      <div class="hero-panel card-pro p-6 sm:p-8 md:p-10 xl:p-12">
+        <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#365978]">Módulo de evaluación</p>
+            <h2 class="mt-3 text-3xl sm:text-4xl md:text-5xl font-black tracking-[-0.05em] text-[#152230]">Casos clínicos con feedback razonado</h2>
+            <p class="mt-3 text-sm sm:text-base leading-relaxed text-slate-600">Cada caso se responde dentro de la propia tarjeta y la app devuelve siempre la opción correcta con su explicación clínica.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full border border-slate-200 bg-white/85 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">14 casos</span>
+            <span class="rounded-full border border-slate-200 bg-white/85 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">Imagen ECG real</span>
+          </div>
+        </div>
       </div>
 
-      <div class="card-pro p-6 sm:p-8 md:p-10 rounded-2xl">
-        <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Cómo usar este bloque</h4>
-        <p class="text-slate-700 leading-relaxed text-sm sm:text-base">Cada tarjeta muestra un caso clínico real extraído de la bibliografía del proyecto. Elige una opción y la app te dirá siempre cuál era la correcta y por qué, tanto si aciertas como si fallas.</p>
+      <div class="card-pro p-6 sm:p-7 md:p-8 rounded-2xl">
+        <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6 border-b border-slate-100 pb-4">Cómo usar este bloque</h4>
+        <p class="text-slate-700 leading-relaxed text-sm sm:text-base">Lee el contexto clínico, revisa la imagen y selecciona una respuesta. El sistema marca el acierto o error y añade la razón bibliográfica del diagnóstico correcto.</p>
       </div>
       
       <div class="space-y-6 sm:space-y-8 md:space-y-12">
@@ -1489,6 +1965,7 @@ document.addEventListener('keydown', (event) => {
   if(event.key !== 'Escape') return;
   closeMobileSidebar();
   $('glosarioModal').classList.add('hidden');
+  closeFigure();
 });
 </script>
 </body>
